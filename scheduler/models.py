@@ -1,13 +1,13 @@
 from django.db import models
-import datetime
 from timezone_field import TimeZoneField
-# from django.contrib.auth.models import User
+from django.utils.timezone import now
+from django.contrib.auth.models import User
+from slugify import slugify
 
 
-class StomatologyUser(models.Model):
+class StomatologyAbstractUser(models.Model):
     """ Абстрактная модель ползьователя"""
-    first_name = models.CharField(max_length=255, verbose_name='Имя')
-    last_name = models.CharField(max_length=255, verbose_name='Фамилия')
+    stomatology_user_id = models.BigAutoField(primary_key=True)
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
     date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True)
     phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
@@ -21,7 +21,8 @@ class StomatologyUser(models.Model):
         return f'{self.last_name} {self.first_name} {self.middle_name}'
 
 
-class Employee(StomatologyUser):
+class Employee(User, StomatologyAbstractUser):
+    """Сотрудник клиники"""
     photo = models.ImageField(upload_to='photos/%Y/%m/%d', verbose_name='Фото сотрудника')
     speciality = models.CharField(max_length=255, verbose_name='Специальность')
     clinic = models.ManyToManyField(to='Clinic', related_name='employees', verbose_name='Клиника')
@@ -32,7 +33,8 @@ class Employee(StomatologyUser):
         ordering = ['speciality']
 
 
-class Customer(StomatologyUser):
+class Customer(StomatologyAbstractUser):
+    """Модель клиента"""
     GENDER = (
         ('male', 'Mужчина'),
         ('female', 'Женщина'),
@@ -44,8 +46,9 @@ class Customer(StomatologyUser):
         ('Canceled', 'Отменён'),
         ('no_show', 'Неявка'),
     )
+    first_name = models.CharField(max_length=255, verbose_name='Имя')
+    last_name = models.CharField(max_length=255, verbose_name='Фамилия')
     gender = models.CharField(max_length=255, choices=GENDER, default='male', verbose_name='Пол')
-    duration_of_admission = models.TimeField(default=datetime.time(00, 15), verbose_name='Длительность приема')
     service = models.CharField(max_length=255, verbose_name='Услуга')
     status = models.CharField(max_length=255, choices=STATUS, default='not_confirmed')
 
@@ -55,7 +58,8 @@ class Customer(StomatologyUser):
 
 
 class Clinic(models.Model):
-    title = models.CharField(max_length=255, verbose_name='Наименование')
+    title = models.CharField(max_length=255, verbose_name='Наименование', unique=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
     phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
     time_zone = TimeZoneField(default='Europe/Moscow')
     is_active = models.BooleanField(default=True, verbose_name='Активна')
@@ -67,17 +71,25 @@ class Clinic(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Clinic, self).save(*args, **kwargs)
+
 
 class Cabinet(models.Model):
     name = models.CharField(max_length=255, verbose_name='Кабинет')
-    clinic = models.ForeignKey(to=Clinic, on_delete=models.CASCADE, related_name='offices', verbose_name='Клиника')
+    clinic = models.ForeignKey(to=Clinic,
+                               on_delete=models.CASCADE,
+                               related_name='offices',
+                               verbose_name='Клиника')
 
     class Meta:
         verbose_name = 'Кабинет'
         verbose_name_plural = 'Кабинеты'
+        unique_together = ('name', 'clinic')
 
     def __str__(self):
-        return self.name
+        return f'{self.name}  ---  {self.clinic.title}'
 
 
 class Event(models.Model):
@@ -85,9 +97,10 @@ class Event(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name='cabinet_events',
                                 verbose_name='Кабинет')
-    date = models.DateField(verbose_name='Дата приема')
 
-    time = models.TimeField(default=datetime.time(8, 00), verbose_name='Длительность приема')
+    dateStart = models.DateTimeField(default=now, verbose_name='Дата и время начала приема')
+    dateFinish = models.DateTimeField(default=now, verbose_name='Дата и время окончания приема')
+
     client = models.ForeignKey(to=Customer,
                                null=True,
                                on_delete=models.CASCADE,
@@ -105,4 +118,7 @@ class Event(models.Model):
         verbose_name_plural = 'События'
 
     def __str__(self):
-        return f'Врач: {self.doctor.__str__()} - Посетитель: {self.client.__str__()}'
+        return f'Врач: {self.doctor.__str__()}-' \
+               f'{self.client.__str__()}-' \
+               f'{self.dateStart.__str__()[:10]}-' \
+               f'{self.cabinet.clinic.slug}'
