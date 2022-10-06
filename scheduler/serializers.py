@@ -1,8 +1,8 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Event
+from .models import Clinic
 
 
-class EventSerializer(ModelSerializer):
+class ClinicSerializer(ModelSerializer):
     class Meta:
-        model = Event
-        fields = '__all__'
+        model = Clinic
+        exclude = ['time_zone']
