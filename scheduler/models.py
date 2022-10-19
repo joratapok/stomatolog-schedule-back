@@ -1,39 +1,11 @@
 from django.db import models
 from timezone_field import TimeZoneField
 from django.utils.timezone import now
-from django.contrib.auth.models import User
 from slugify import slugify
+from django.contrib.auth.models import User
 
 
-class StomatologyAbstractUser(models.Model):
-    """ Абстрактная модель ползьователя"""
-    stomatology_user_id = models.BigAutoField(primary_key=True)
-    middle_name = models.CharField(max_length=255, verbose_name='Отчество')
-    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True)
-    phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
-
-    class Meta:
-        verbose_name = 'Пользователь стоматологии'
-        verbose_name_plural = 'Пользователи стоматологии'
-        ordering = ['-date_of_birth']
-
-    def __str__(self):
-        return f'{self.last_name} {self.first_name} {self.middle_name}'
-
-
-class Employee(User, StomatologyAbstractUser):
-    """Сотрудник клиники"""
-    photo = models.ImageField(upload_to='photos/%Y/%m/%d', verbose_name='Фото сотрудника')
-    speciality = models.CharField(max_length=255, verbose_name='Специальность')
-    clinic = models.ManyToManyField(to='Clinic', related_name='employees', verbose_name='Клиника')
-
-    class Meta:
-        verbose_name = 'Сотрудник'
-        verbose_name_plural = 'Сотрудники'
-        ordering = ['speciality']
-
-
-class Customer(StomatologyAbstractUser):
+class Customer(models.Model):
     """Модель клиента"""
     GENDER = (
         ('male', 'Mужчина'),
@@ -48,7 +20,10 @@ class Customer(StomatologyAbstractUser):
     )
     first_name = models.CharField(max_length=255, verbose_name='Имя')
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
+    middle_name = models.CharField(max_length=255, verbose_name='Отчество')
+    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True)
     gender = models.CharField(max_length=255, choices=GENDER, default='male', verbose_name='Пол')
+    phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
     service = models.CharField(max_length=255, verbose_name='Услуга')
     status = models.CharField(max_length=255, choices=STATUS, default='not_confirmed')
 
@@ -56,10 +31,13 @@ class Customer(StomatologyAbstractUser):
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
 
+    def __str__(self):
+        return f'{self.last_name} {self.first_name}'
+
 
 class Clinic(models.Model):
     title = models.CharField(max_length=255, verbose_name='Наименование', unique=True)
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL", blank=True)
     phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
     time_zone = TimeZoneField(default='Europe/Moscow')
     is_active = models.BooleanField(default=True, verbose_name='Активна')
@@ -69,7 +47,7 @@ class Clinic(models.Model):
         verbose_name_plural = 'Клиники'
 
     def __str__(self):
-        return self.title
+        return f'{self.id} {self.title}'
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
@@ -80,7 +58,7 @@ class Cabinet(models.Model):
     name = models.CharField(max_length=255, verbose_name='Кабинет')
     clinic = models.ForeignKey(to=Clinic,
                                on_delete=models.CASCADE,
-                               related_name='offices',
+                               related_name='cabinets',
                                verbose_name='Клиника')
 
     class Meta:
@@ -107,10 +85,10 @@ class Event(models.Model):
                                related_name='customer_events',
                                verbose_name='Клиент')
 
-    doctor = models.ForeignKey(to=Employee,
+    doctor = models.ForeignKey(to=User,
                                null=True,
                                on_delete=models.SET_NULL,
-                               related_name='employee_events',
+                               related_name='doctor_events',
                                verbose_name='Лечащий врач')
 
     class Meta:

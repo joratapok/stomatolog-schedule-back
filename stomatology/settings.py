@@ -13,7 +13,6 @@ import os
 from pathlib import Path
 import environ
 
-
 env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -45,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'scheduler.apps.SchedulerConfig',
     'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -104,6 +105,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# AUTH_USER_MODEL = 'scheduler.Profile'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
