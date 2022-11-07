@@ -38,16 +38,29 @@ class CabinetSerializer(ModelSerializer):
 
 
 class CabinetClinicSerializer(ModelSerializer):
-    cabinet_events = EventClinicSerializer(many=True, read_only=True)
+    cabinet_events = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Cabinet
         fields = ['id', 'name', 'cabinet_events']
 
+    def get_cabinet_events(self, obj):
+        cabinet = obj
+        queryset = cabinet.cabinet_events.filter(dateStart__startswith=self.context['filter_date'])
+        return EventClinicSerializer(queryset, many=True).data
+
 
 class ClinicSerializer(ModelSerializer):
-    cabinets = CabinetClinicSerializer(many=True)
+    cabinets = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Clinic
         fields = ['id', 'title', 'slug', 'cabinets', 'phone', 'is_active']
+
+    def get_cabinets(self, obj):
+        clinic = obj
+        date = self.context['request'].query_params['date']
+        filter_date = f'{date[6:]}-{date[3:5]}-{date[:2]}'
+        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=filter_date)
+        queryset = CabinetClinicSerializer(queryset, many=True, context={'filter_date': filter_date}).data
+        return queryset
