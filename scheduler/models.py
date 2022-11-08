@@ -5,6 +5,23 @@ from slugify import slugify
 from django.contrib.auth.models import User
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    middle_name = models.CharField(max_length=255, verbose_name='Отчество')
+    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True, auto_now=True)
+    phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True, default='8-999-888-77-66')
+    image = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name='Фото сотрудника')
+    speciality = models.CharField(max_length=255, verbose_name='Специальность', default='Терапевт')
+    clinic = models.ManyToManyField('Clinic', related_name='profiles', verbose_name='Клиники')
+
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
+
+    def __str__(self):
+        return self.user
+
+
 class Customer(models.Model):
     """Модель клиента"""
     GENDER = (
@@ -21,9 +38,9 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=255, verbose_name='Имя')
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
-    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True)
+    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True, auto_now=True)
     gender = models.CharField(max_length=255, choices=GENDER, default='male', verbose_name='Пол')
-    phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
+    phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True, default='8-999-888-77-66')
     service = models.CharField(max_length=255, verbose_name='Услуга')
     status = models.CharField(max_length=255, choices=STATUS, default='not_confirmed')
 
@@ -85,7 +102,7 @@ class Event(models.Model):
                                related_name='customer_events',
                                verbose_name='Клиент')
 
-    doctor = models.ForeignKey(to=User,
+    doctor = models.ForeignKey(to=Profile,
                                null=True,
                                on_delete=models.SET_NULL,
                                related_name='doctor_events',
