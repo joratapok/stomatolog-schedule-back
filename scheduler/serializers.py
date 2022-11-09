@@ -3,6 +3,20 @@ from rest_framework import serializers
 from .models import Clinic, Cabinet, Event, Customer, Profile, User
 
 
+class UserProfileSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'password']
+
+
+class ProfileSerializer(ModelSerializer):
+    user = UserProfileSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ['user', 'middle_name', 'date_of_birth', 'phone', 'image', 'speciality', 'clinic']
+
+
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
