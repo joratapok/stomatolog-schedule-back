@@ -19,7 +19,7 @@ class Profile(models.Model):
         verbose_name_plural = 'Профили'
 
     def __str__(self):
-        return self.user
+        return f'{self.user.last_name} {self.user.first_name}'
 
 
 class Customer(models.Model):
