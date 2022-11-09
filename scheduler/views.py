@@ -27,7 +27,7 @@ class ClinicListApiView(generics.ListAPIView):
                 }
 
     def get_queryset(self):
-        return Clinic.objects.filter(cabinets__cabinet_events__dateStart__startswith=self.get_filter_date())
+        return Clinic.objects.filter(cabinets__cabinet_events__dateStart__startswith=self.get_filter_date()).distinct()
 
 
 class EventCreateApiView(generics.CreateAPIView):
