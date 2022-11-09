@@ -67,7 +67,5 @@ class ClinicSerializer(ModelSerializer):
 
     def get_cabinets(self, obj):
         clinic = obj
-        date = self.context['request'].query_params['date']
-        filter_date = f'{date[6:]}-{date[3:5]}-{date[:2]}'
-        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=filter_date)
-        return CabinetClinicSerializer(queryset, many=True, context={'filter_date': filter_date}).data
+        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date'])
+        return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date']}).data
