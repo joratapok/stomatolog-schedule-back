@@ -1,6 +1,8 @@
 venv
 .env
-stomatology/__pycache__/*
-scheduler/__pycache__/*
-scheduler/migrations/__pycache__/*
+.idea
+__pycache__
+stomatology/__pycache__/
+scheduler/__pycache__/
+scheduler/migrations/__pycache__/
 
