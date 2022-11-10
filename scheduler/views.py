@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 from .models import Clinic, Event, Profile
-from .serializers import ClinicSerializer, EventSerializer, ProfileSerializer
+from .serializers import ClinicSerializer, EventSerializer, UserProfileSerializer, UserSerializer
 from django.db.models import Subquery
 
 TODAY_DATE = datetime.today().date()
@@ -38,4 +38,5 @@ class EventCreateApiView(generics.CreateAPIView):
 
 class ProfileCreateApiView(generics.CreateAPIView):
     queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
+    serializer_class = UserProfileSerializer
+    # permission_classes = [IsAuthenticated]

@@ -1,20 +1,57 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from .models import Clinic, Cabinet, Event, Customer, Profile, User
+from rest_framework.response import Response
+from rest_framework import status
 
 
-class UserProfileSerializer(ModelSerializer):
+class UserProfileClinicSerializer(ModelSerializer):
+    class Meta:
+        model = Clinic
+        fields = ['id']
+
+
+class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
+    middle_name = serializers.CharField(source='profile.middle_name')
+    date_of_birth = serializers.CharField(source='profile.date_of_birth')
+    phone = serializers.CharField(source='profile.phone')
+    image = serializers.ImageField(source='profile.image')
+    speciality = serializers.CharField(source='profile.speciality')
+    clinic = serializers.PrimaryKeyRelatedField(queryset=Clinic.objects.all(), many=True)
+
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'password']
+        fields = ['username',
+                  'password',
+                  'first_name',
+                  'last_name',
+                  'middle_name',
+                  'date_of_birth',
+                  'phone',
+                  'image',
+                  'speciality',
+                  'clinic',
+                  ]
 
+    def create(self, validated_data):
+        print('VALID = ', validated_data['profile']['middle_name'])
+        user = User.objects.create(username=validated_data['username'],
+                                   password=validated_data['password'],
+                                   first_name=validated_data['first_name'],
+                                   last_name=validated_data['last_name'])
 
-class ProfileSerializer(ModelSerializer):
-    user = UserProfileSerializer(many=False, read_only=True)
+        profile = Profile.objects.create(user=user,
+                                         middle_name=validated_data['profile']['middle_name'],
+                                         date_of_birth=validated_data['profile']['date_of_birth'],
+                                         phone=validated_data['profile']['phone'],
+                                         image=validated_data['profile']['image'],
+                                         speciality=validated_data['profile']['speciality'],
+                                         )
 
-    class Meta:
-        model = Profile
-        fields = ['user', 'middle_name', 'date_of_birth', 'phone', 'image', 'speciality', 'clinic']
+        for clinic in validated_data['clinic']:
+            profile.clinic.add(clinic.id)
+
+        return user
 
 
 class UserSerializer(ModelSerializer):
@@ -53,7 +90,6 @@ class EventClinicSerializer(ModelSerializer):
 
 
 class CabinetSerializer(ModelSerializer):
-
     class Meta:
         model = Cabinet
         fields = ['clinic', 'name', 'cabinet_events']
