@@ -1,10 +1,9 @@
-from django.db.models import Subquery
 from rest_framework import generics
+from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 from .models import Clinic, Event, Profile
-from .serializers import ClinicSerializer, EventSerializer, UserProfileSerializer, UserSerializer
-from django.db.models import Subquery
+from .serializers import ClinicSerializer, EventSerializer, UserProfileSerializer
 
 TODAY_DATE = datetime.today().date()
 
@@ -36,7 +35,12 @@ class EventCreateApiView(generics.CreateAPIView):
     # permission_classes = [IsAuthenticated]
 
 
-class ProfileCreateApiView(generics.CreateAPIView):
-    queryset = Profile.objects.all()
+class UserCreateApiView(generics.CreateAPIView):
+    queryset = User.objects.all()
     serializer_class = UserProfileSerializer
     # permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        instance.set_password(instance.password)
+        instance.save()

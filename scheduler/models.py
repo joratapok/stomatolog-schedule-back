@@ -11,7 +11,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
     date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True, auto_now=True)
-    phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True, default='8-999-888-77-66')
+    phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
     image = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name='Фото сотрудника')
     speciality = models.CharField(max_length=255, verbose_name='Специальность', default='Терапевт')
     clinic = models.ManyToManyField('Clinic', related_name='profiles', verbose_name='Клиники')
@@ -23,14 +23,14 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.last_name} {self.user.first_name}'
 
-    # @receiver(post_save, sender=User)
-    # def create_user_profile(sender, instance, created, **kwargs):
-    #     if created:
-    #         Profile.objects.create(user=instance)
-    #
-    # @receiver(post_save, sender=User)
-    # def save_user_profile(sender, instance, **kwargs):
-    #     instance.profile.save()
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
 
 
 class Customer(models.Model):
