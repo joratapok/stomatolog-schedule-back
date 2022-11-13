@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/events/', views.ClinicListApiView.as_view()),  # GET
     path('api/events/create/', views.EventCreateApiView.as_view()),  # POST
     path('api/profile/create/', views.UserCreateApiView.as_view()),  # POST
+    path('api/profile/<int:pk>/', views.UserRetrieveUpdateDestroyAPIView.as_view()),
 
 ]
 

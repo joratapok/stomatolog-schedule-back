@@ -4,9 +4,10 @@ from .models import Clinic, Cabinet, Event, Customer, Profile, User
 from rest_framework.response import Response
 from rest_framework import status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
+from drf_writable_nested.mixins import UniqueFieldsMixin, NestedUpdateMixin
 
 
-class ProfileSerializer(WritableNestedModelSerializer):
+class ProfileSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
     class Meta:
         model = Profile
         fields = ('middle_name', 'date_of_birth', 'phone', 'image', 'speciality', 'clinic')
@@ -70,7 +71,9 @@ class CabinetClinicSerializer(ModelSerializer):
 
     def get_cabinet_events(self, obj):
         cabinet = obj
-        queryset = cabinet.cabinet_events.filter(dateStart__startswith=self.context['filter_date'])
+        queryset = cabinet.cabinet_events.filter(dateStart__startswith=self.context['filter_date'],
+                                                 doctor=self.context['profile']
+                                                 )
         return EventClinicSerializer(queryset, many=True).data
 
 
@@ -83,5 +86,8 @@ class ClinicSerializer(ModelSerializer):
 
     def get_cabinets(self, obj):
         clinic = obj
-        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date'])
-        return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date']}).data
+        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date'],
+                                          cabinet_events__doctor=self.context['profile']
+                                          )
+        return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date'],
+                                                                     'profile': self.context['profile']}).data
