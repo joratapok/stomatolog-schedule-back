@@ -10,9 +10,9 @@ from django.dispatch import receiver
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
-    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True, auto_now=True)
+    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True, auto_now_add=True)
     phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
-    image = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name='Фото сотрудника')
+    image = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name='Фото сотрудника', null=True, blank=True)
     speciality = models.CharField(max_length=255, verbose_name='Специальность', default='Терапевт')
     clinic = models.ManyToManyField('Clinic', related_name='profiles', verbose_name='Клиники')
 

@@ -1,10 +1,11 @@
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 from .models import Clinic, Event, Profile
-from .serializers import ClinicSerializer, EventSerializer, UserProfileSerializer, ProfileSerializer
+from .serializers import ClinicSerializer, EventSerializer, UserProfileSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -13,7 +14,6 @@ TODAY_DATE = datetime.today().date()
 
 class ClinicListApiView(generics.ListAPIView):
     serializer_class = ClinicSerializer
-
     # permission_classes = [IsAuthenticated]
 
     def get_filter_date(self):
@@ -45,7 +45,6 @@ class EventCreateApiView(generics.CreateAPIView):
 class UserCreateApiView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
-
     # permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -68,12 +67,15 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         serializer = UserProfileSerializer(user)
         return Response(serializer.data)
 
-    def put(self, request, pk):
+    def put(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
         user = self.get_object(pk)
         user_serializer = UserProfileSerializer(user, data=request.data)
+
         if user_serializer.is_valid():
             user_serializer.save()
             return Response(user_serializer.data)
+
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
@@ -82,4 +84,3 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         profile.delete()
         user.delete()
         return Response(status.HTTP_204_NO_CONTENT)
-
