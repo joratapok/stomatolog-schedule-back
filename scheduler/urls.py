@@ -20,9 +20,7 @@ urlpatterns = [
     # path('api/auth/login/', obtain_auth_token, name='token'),
 
     # Вход и выход по токенам
-    """ Вход по 'auth/token/login' 
-        Выход по 'auth/token/logout' 
-    """,
+
     re_path(r'^auth/', include('djoser.urls.authtoken')),
 
 ]
