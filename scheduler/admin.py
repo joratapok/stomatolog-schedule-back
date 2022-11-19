@@ -1,6 +1,5 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import Customer, Clinic, Cabinet, Event, Profile
+from scheduler.models import Customer, Clinic, Cabinet, Event
 
 
 class ClinicAdmin(admin.ModelAdmin):
@@ -8,7 +7,6 @@ class ClinicAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Clinic, ClinicAdmin)
-admin.site.register(Profile)
 admin.site.register(Customer)
 admin.site.register(Cabinet)
 admin.site.register(Event)

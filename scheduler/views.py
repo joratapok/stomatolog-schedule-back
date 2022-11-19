@@ -6,8 +6,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
 
-from .models import Clinic, Event, Profile
-from .serializers import ClinicSerializer, EventSerializer, UserProfileSerializer
+from employee.models import Profile
+from scheduler.models import Clinic, Event
+from scheduler.serializers import ClinicSerializer, EventSerializer
 
 
 TODAY_DATE = datetime.today().date()
@@ -43,45 +44,45 @@ class EventCreateApiView(generics.CreateAPIView):
     # permission_classes = [IsAuthenticated]
 
 
-class UserCreateApiView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
-    # permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        instance = serializer.save()
-        instance.set_password(instance.password)
-        instance.save()
-
-
-class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = UserProfileSerializer
-
-    def get_object(self, pk):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk):
-        user = self.get_object(pk)
-        serializer = UserProfileSerializer(user)
-        return Response(serializer.data)
-
-    def put(self, request, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        user = self.get_object(pk)
-        user_serializer = UserProfileSerializer(user, data=request.data)
-
-        if user_serializer.is_valid():
-            user_serializer.save()
-            return Response(user_serializer.data)
-
-        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        user = self.get_object(pk)
-        profile = Profile.objects.get(user=user)
-        profile.delete()
-        user.delete()
-        return Response(status.HTTP_204_NO_CONTENT)
+# class UserCreateApiView(generics.CreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserProfileSerializer
+#     # permission_classes = [IsAuthenticated]
+#
+#     def perform_create(self, serializer):
+#         instance = serializer.save()
+#         instance.set_password(instance.password)
+#         instance.save()
+#
+#
+# class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     serializer_class = UserProfileSerializer
+#
+#     def get_object(self, pk):
+#         try:
+#             return User.objects.get(pk=pk)
+#         except User.DoesNotExist:
+#             raise Http404
+#
+#     def get(self, request, pk):
+#         user = self.get_object(pk)
+#         serializer = UserProfileSerializer(user)
+#         return Response(serializer.data)
+#
+#     def put(self, request, *args, **kwargs):
+#         pk = self.kwargs.get('pk')
+#         user = self.get_object(pk)
+#         user_serializer = UserProfileSerializer(user, data=request.data)
+#
+#         if user_serializer.is_valid():
+#             user_serializer.save()
+#             return Response(user_serializer.data)
+#
+#         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#     def delete(self, request, pk):
+#         user = self.get_object(pk)
+#         profile = Profile.objects.get(user=user)
+#         profile.delete()
+#         user.delete()
+#         return Response(status.HTTP_204_NO_CONTENT)
