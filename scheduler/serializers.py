@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from scheduler.models import Clinic, Cabinet, Event, Customer#, User
+from scheduler.models import Clinic, Cabinet, Event, Customer
 from django.contrib.auth.models import User
 from employee.models import Profile
 
@@ -55,9 +55,10 @@ class CabinetClinicSerializer(ModelSerializer):
 
     def get_cabinet_events(self, obj):
         cabinet = obj
-        queryset = cabinet.cabinet_events.filter(dateStart__startswith=self.context['filter_date'],
-                                                 doctor=self.context['profile']
-                                                 )
+        queryset = cabinet.cabinet_events.filter(dateStart__startswith=self.context['filter_date'])
+
+        if self.context['profile'].role == 'doctor':
+            queryset = queryset.filter(doctor=self.context['profile']).distinct()
         return EventClinicSerializer(queryset, many=True).data
 
 
@@ -70,8 +71,9 @@ class ClinicSerializer(ModelSerializer):
 
     def get_cabinets(self, obj):
         clinic = obj
-        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date'],
-                                          cabinet_events__doctor=self.context['profile']
-                                          )
+        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date'])
+
+        if self.context['profile'].role == 'doctor':
+            queryset = queryset.filter(cabinet_events__doctor=self.context['profile']).distinct()
         return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date'],
                                                                      'profile': self.context['profile']}).data

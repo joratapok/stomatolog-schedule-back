@@ -10,7 +10,7 @@ class ProfileSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('middle_name', 'date_of_birth', 'phone', 'image', 'speciality', 'clinic')
+        fields = ('middle_name', 'role', 'date_of_birth', 'phone', 'image', 'speciality', 'clinic')
 
 
 class UserProfileSerializer(WritableNestedModelSerializer):
@@ -30,6 +30,7 @@ class UserProfileSerializer(WritableNestedModelSerializer):
         profile_data = validated_data.pop('profile')
 
         profile.middle_name = profile_data['middle_name']
+        profile.role = profile_data['role']
         profile.phone = profile_data['phone']
         profile.date_of_birth = profile_data['date_of_birth']
         if profile_data['image']:

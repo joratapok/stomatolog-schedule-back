@@ -69,7 +69,7 @@ class Event(models.Model):
         ('not_confirmed', 'Не подтвержден'),
         ('confirmed', 'Подтвержден'),
         ('reception_completed', 'Прием завершен'),
-        ('Canceled', 'Отменён'),
+        ('canceled', 'Отменён'),
         ('no_show', 'Неявка'),
     )
 
