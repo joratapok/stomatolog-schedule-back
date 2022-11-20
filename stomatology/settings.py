@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'scheduler.apps.SchedulerConfig',
+    'employee.apps.EmployeeConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
@@ -110,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # AUTH_USER_MODEL = 'scheduler.Profile'
-AUTH_PROFILE_MODULE = 'scheduler.Profile'
+AUTH_PROFILE_MODULE = 'employee.Profile'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
