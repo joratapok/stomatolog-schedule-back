@@ -1,8 +1,11 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
+
 from employee.models import Profile
 from scheduler.models import Clinic, Event
 from scheduler.serializers import ClinicSerializer, EventSerializer
+from scheduler.permissions import IsAdministrator
 
 
 TODAY_DATE = datetime.today().date()
@@ -10,7 +13,7 @@ TODAY_DATE = datetime.today().date()
 
 class ClinicListApiView(generics.ListAPIView):
     serializer_class = ClinicSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_filter_date(self):
         if 'date' in self.request.query_params:
@@ -44,4 +47,10 @@ class ClinicListApiView(generics.ListAPIView):
 class EventCreateApiView(generics.CreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdministrator]
+
+
+class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [IsAdministrator]

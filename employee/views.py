@@ -2,20 +2,20 @@ from django.http import Http404
 from django.contrib.auth.models import User
 from rest_framework import generics, mixins
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 
-
 from employee.models import Profile
 from employee.serializers import UserProfileSerializer
+from employee.permissions import IsOwner
 
 
 class UserCreateApiView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwner]
 
     def perform_create(self, serializer):
         instance = serializer.save()
@@ -27,6 +27,7 @@ class UserUpdateDestroyAPIView(mixins.UpdateModelMixin,
                                mixins.DestroyModelMixin,
                                GenericAPIView):
     serializer_class = UserProfileSerializer
+    permission_classes = [IsOwner]
 
     def get_object(self, pk):
         try:
@@ -60,6 +61,7 @@ class UserUpdateDestroyAPIView(mixins.UpdateModelMixin,
 
 class UserRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         try:
