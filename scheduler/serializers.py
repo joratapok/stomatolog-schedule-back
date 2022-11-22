@@ -44,7 +44,7 @@ class EventClinicSerializer(ModelSerializer):
 class CabinetSerializer(ModelSerializer):
     class Meta:
         model = Cabinet
-        fields = ('clinic', 'name', 'cabinet_events')
+        fields = ('clinic', 'name')
 
 
 class CabinetClinicSerializer(ModelSerializer):

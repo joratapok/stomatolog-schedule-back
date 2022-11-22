@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 
 from employee.models import Profile
-from scheduler.models import Clinic, Event
-from scheduler.serializers import ClinicSerializer, EventSerializer
+from scheduler.models import Clinic, Event, Cabinet
+from scheduler.serializers import ClinicSerializer, EventSerializer, CabinetSerializer
 from scheduler.permissions import IsAdministrator
 
 
@@ -53,4 +53,16 @@ class EventCreateApiView(generics.CreateAPIView):
 class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    permission_classes = [IsAdministrator]
+
+
+class CabinetCreateApiView(generics.CreateAPIView):
+    queryset = Cabinet.objects.all()
+    serializer_class = CabinetSerializer
+    permission_classes = [IsAdministrator]
+
+
+class CabinetRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Cabinet.objects.all()
+    serializer_class = CabinetSerializer
     permission_classes = [IsAdministrator]
