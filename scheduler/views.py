@@ -27,6 +27,7 @@ class ClinicListApiView(generics.ListAPIView):
                 }
 
     def get_queryset(self):
+        print('AUTH = ', self.request.auth)
         queryset = Clinic.objects.filter(
             cabinets__cabinet_events__dateStart__startswith=self.get_filter_date()).distinct()
 
@@ -38,7 +39,7 @@ class ClinicListApiView(generics.ListAPIView):
             return queryset.distinct()
         elif profile.role == 'doctor':
             return queryset.filter(
-                cabinets__cabinet_events__doctor=Profile.objects.get(user=self.request.user)).distinct()
+                cabinets__cabinet_events__doctor=profile).distinct()
 
 
 class EventCreateApiView(generics.CreateAPIView):

@@ -60,7 +60,7 @@ class Cabinet(models.Model):
         unique_together = ('name', 'clinic')
 
     def __str__(self):
-        return f'{self.name}  ---  {self.clinic.title}---  {self.pk}'
+        return f'{self.name}  ---  {self.clinic.title} --- {self.pk}'
 
 
 class Event(models.Model):

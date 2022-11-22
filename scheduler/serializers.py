@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from scheduler.models import Clinic, Cabinet, Event, Customer
@@ -56,7 +57,12 @@ class CabinetClinicSerializer(ModelSerializer):
     def get_cabinet_events(self, obj):
         cabinet = obj
         queryset = cabinet.cabinet_events.filter(dateStart__startswith=self.context['filter_date'])
-
+        # queryset = cabinet.objects.all().prefetch_related(
+        #     Prefetch(
+        #         'cabinet_events',
+        #         queryset=Event.objects.filter(dateStart__startswith=self.context['filter_date'])
+        #     )
+        # )
         if self.context['profile'].role == 'doctor':
             queryset = queryset.filter(doctor=self.context['profile']).distinct()
         return EventClinicSerializer(queryset, many=True).data

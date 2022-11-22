@@ -1,9 +1,11 @@
 from django.http import Http404
 from django.contrib.auth.models import User
-from rest_framework import generics
+from rest_framework import generics, mixins
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 
 from employee.models import Profile
 from employee.serializers import UserProfileSerializer
@@ -20,7 +22,9 @@ class UserCreateApiView(generics.CreateAPIView):
         instance.save()
 
 
-class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class UserUpdateDestroyAPIView(mixins.UpdateModelMixin,
+                               mixins.DestroyModelMixin,
+                               GenericAPIView):
     serializer_class = UserProfileSerializer
 
     def get_object(self, pk):
@@ -51,3 +55,13 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         profile.delete()
         user.delete()
         return Response(status.HTTP_204_NO_CONTENT)
+
+
+class UserRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = UserProfileSerializer
+
+    def get_object(self):
+        try:
+            return Token.objects.get(key=self.request.auth).user
+        except User.DoesNotExist:
+            raise Http404
