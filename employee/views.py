@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 
+
 from employee.models import Profile
 from employee.serializers import UserProfileSerializer
 

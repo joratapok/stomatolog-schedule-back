@@ -121,6 +121,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
+    # Переопределяет поле non_field_errors при
+    # вводе неправильных данных логина и пароля
+    'NON_FIELD_ERRORS_KEY': 'message',
 }
 
 # Internationalization
