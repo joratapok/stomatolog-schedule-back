@@ -1,5 +1,3 @@
-from abc import ABC
-
 from rest_framework import serializers
 from employee.models import Profile
 from django.contrib.auth.models import User
@@ -9,6 +7,7 @@ from djoser.serializers import TokenCreateSerializer
 from djoser.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import ValidationError
+from djoser.serializers import TokenSerializer
 
 
 class ProfileSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
@@ -52,10 +51,11 @@ class UserProfileSerializer(WritableNestedModelSerializer):
 
 class UserProfileWithoutPasswordSerializer(WritableNestedModelSerializer):
     profile = ProfileSerializer()
+    auth_token = TokenSerializer()
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'profile')
+        fields = ('username', 'first_name', 'last_name', 'profile', 'auth_token')
 
 
 class EmployeeTokenCreateSerializer(TokenCreateSerializer):
