@@ -9,7 +9,7 @@ from rest_framework.authtoken.models import Token
 
 
 from employee.models import Profile
-from employee.serializers import UserProfileSerializer
+from employee.serializers import UserProfileSerializer, UserProfileWithoutPasswordSerializer
 from employee.permissions import IsOwner
 
 
@@ -20,6 +20,7 @@ class UserCreateApiView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         instance = serializer.save()
+        print('INSTANCE.PROFILE = ', instance)
         instance.set_password(instance.password)
         instance.save()
 
@@ -61,7 +62,7 @@ class UserUpdateDestroyAPIView(mixins.UpdateModelMixin,
 
 
 class UserRetrieveAPIView(generics.RetrieveAPIView):
-    serializer_class = UserProfileSerializer
+    serializer_class = UserProfileWithoutPasswordSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):

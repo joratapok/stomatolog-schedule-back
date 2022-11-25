@@ -50,6 +50,14 @@ class UserProfileSerializer(WritableNestedModelSerializer):
         return instance
 
 
+class UserProfileWithoutPasswordSerializer(WritableNestedModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'profile')
+
+
 class EmployeeTokenCreateSerializer(TokenCreateSerializer):
     """
         Переопределение статус кода с HTTP_400_BAD_REQUEST на HTTP_403_FORBIDDEN
