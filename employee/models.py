@@ -1,8 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, post_init, pre_save, pre_init
-from django.dispatch import receiver
-from annoying.functions import get_object_or_None
 
 
 class Profile(models.Model):
