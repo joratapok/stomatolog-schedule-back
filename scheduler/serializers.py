@@ -56,7 +56,7 @@ class CabinetClinicSerializer(ModelSerializer):
 
     def get_cabinet_events(self, obj):
         cabinet = obj
-        queryset = cabinet.cabinet_events.filter(dateStart__startswith=self.context['filter_date'])
+        queryset = cabinet.cabinet_events.filter(dateStart__startswith=self.context['filter_date']).distinct()
         # queryset = cabinet.objects.all().prefetch_related(
         #     Prefetch(
         #         'cabinet_events',
@@ -77,7 +77,7 @@ class ClinicSerializer(ModelSerializer):
 
     def get_cabinets(self, obj):
         clinic = obj
-        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date'])
+        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date']).distinct()
 
         if self.context['profile'].role == 'doctor':
             queryset = queryset.filter(cabinet_events__doctor=self.context['profile']).distinct()
