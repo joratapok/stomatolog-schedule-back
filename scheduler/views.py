@@ -33,6 +33,9 @@ class EventListApiView(generics.ListAPIView):
         queryset = Clinic.objects.filter(
             cabinets__cabinet_events__dateStart__startswith=self.get_filter_date()).distinct()
 
+        if not queryset:
+            queryset = Clinic.objects.all()
+
         profile = Profile.objects.get(user=self.request.user)
 
         if profile.role == 'administrator':

@@ -77,7 +77,10 @@ class ClinicSerializer(ModelSerializer):
 
     def get_cabinets(self, obj):
         clinic = obj
-        queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date']).distinct()
+        # queryset = clinic.cabinets.filter(cabinet_events__dateStart__startswith=self.context['filter_date']).distinct()
+        # Мои вставки кода
+        queryset = clinic.cabinets.all()
+        # ---------------------------
 
         if self.context['profile'].role == 'doctor':
             queryset = queryset.filter(cabinet_events__doctor=self.context['profile']).distinct()
