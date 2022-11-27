@@ -11,7 +11,7 @@ from scheduler.permissions import IsAdministrator
 TODAY_DATE = datetime.today().date()
 
 
-class ClinicListApiView(generics.ListAPIView):
+class EventListApiView(generics.ListAPIView):
     serializer_class = ClinicSerializer
     permission_classes = [IsAuthenticated]
 
