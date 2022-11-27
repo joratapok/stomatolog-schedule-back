@@ -1,8 +1,20 @@
-from rest_framework import serializers
+from datetime import datetime, timedelta
+
+import pytz
+from rest_framework import serializers, exceptions, status
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.response import Response
+
 from employee.models import Profile
 from django.contrib.auth.models import User
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin, NestedUpdateMixin
+from djoser.serializers import TokenCreateSerializer
+from djoser.conf import settings
+from django.contrib.auth import authenticate
+from rest_framework.exceptions import ValidationError
+from djoser.serializers import TokenSerializer
 
 
 class ProfileSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
@@ -42,3 +54,32 @@ class UserProfileSerializer(WritableNestedModelSerializer):
         instance.save()
 
         return instance
+
+
+class UserProfileWithoutPasswordSerializer(WritableNestedModelSerializer):
+    profile = ProfileSerializer()
+    auth_token = TokenSerializer()
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'profile', 'auth_token')
+
+
+class EmployeeTokenCreateSerializer(TokenCreateSerializer):
+    """
+        Переопределение статус кода с HTTP_400_BAD_REQUEST на HTTP_403_FORBIDDEN
+        через class ValidationError
+    """
+    def validate(self, attrs):
+        password = attrs.get("password")
+        params = {settings.LOGIN_FIELD: attrs.get(settings.LOGIN_FIELD)}
+        self.user = authenticate(
+            request=self.context.get("request"), **params, password=password
+        )
+        if not self.user:
+            self.user = User.objects.filter(**params).first()
+            if self.user and not self.user.check_password(password):
+                raise ValidationError('permission_denied')
+        if self.user and self.user.is_active:
+            return attrs
+        raise ValidationError('permission_denied')
