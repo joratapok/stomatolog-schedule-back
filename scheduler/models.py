@@ -78,8 +78,8 @@ class Event(models.Model):
                                 related_name='cabinet_events',
                                 verbose_name='Кабинет')
 
-    dateStart = models.DateTimeField(default=now, verbose_name='Дата и время начала приема')
-    dateFinish = models.DateTimeField(default=now, verbose_name='Дата и время окончания приема')
+    date_start = models.DateTimeField(verbose_name='Дата и время начала приема')
+    date_finish = models.DateTimeField(verbose_name='Дата и время окончания приема')
     service = models.CharField(max_length=255, verbose_name='Услуга', default='Медицинский осмотр')
     status = models.CharField(max_length=255, choices=STATUS, default='not_confirmed')
     color = models.CharField(max_length=255, verbose_name='Цвет', null=True, blank=True)
@@ -103,5 +103,5 @@ class Event(models.Model):
     def __str__(self):
         return f'Врач: {self.doctor.__str__()}-' \
                f'{self.client.__str__()}-' \
-               f'{self.dateStart.__str__()[:10]}-' \
+               f'{self.date_start.__str__()[:10]}-' \
                f'{self.cabinet.clinic.slug}'

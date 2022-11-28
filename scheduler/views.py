@@ -31,7 +31,7 @@ class EventListApiView(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Clinic.objects.filter(
-            cabinets__cabinet_events__dateStart__startswith=self.get_filter_date()).distinct()
+            cabinets__cabinet_events__date_start__startswith=self.get_filter_date()).distinct()
 
         if not queryset:
             queryset = Clinic.objects.all()

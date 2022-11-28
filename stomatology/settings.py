@@ -117,6 +117,8 @@ AUTH_PROFILE_MODULE = 'employee.Profile'
 
 REST_FRAMEWORK = {
 
+    'DATETIME_FORMAT': "%d.%m.%Y %H:%M",
+
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
         'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
@@ -150,8 +152,12 @@ TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
-USE_TZ = True
+# Если True, то использует часовой пояс TIME_ZONE, иначе использует местное время.
+USE_TZ = False
 
+# DATETIME_FORMAT = "%Y-%m-%d%H:%M"
+#
+# L10N = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
