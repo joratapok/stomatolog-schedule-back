@@ -93,6 +93,7 @@ class Event(models.Model):
                                verbose_name='Клиент')
 
     doctor = models.ForeignKey(to=Profile,
+                               limit_choices_to={'role': 'doctor'},
                                null=True,
                                on_delete=models.SET_NULL,
                                related_name='doctor_events',
