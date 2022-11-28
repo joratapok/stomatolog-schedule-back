@@ -34,6 +34,8 @@ class Clinic(models.Model):
     phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
     time_zone = TimeZoneField(default='Europe/Moscow')
     is_active = models.BooleanField(default=True, verbose_name='Активна')
+    start_of_the_day = models.CharField(max_length=10, default='08:00', verbose_name='Начало рабочего дня')
+    end_of_the_day = models.CharField(max_length=10, default='17:00', verbose_name='Конец рабочего дня')
 
     class Meta:
         verbose_name = 'Клиника'

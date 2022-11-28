@@ -73,7 +73,7 @@ class ClinicSerializer(ModelSerializer):
 
     class Meta:
         model = Clinic
-        fields = ('id', 'title', 'slug', 'cabinets', 'phone', 'is_active')
+        fields = ('id', 'title', 'slug', 'cabinets', 'phone', 'is_active', 'start_of_the_day', 'end_of_the_day')
 
     def get_cabinets(self, obj):
         clinic = obj
