@@ -4,7 +4,7 @@ from datetime import datetime
 
 from employee.models import Profile
 from scheduler.models import Clinic, Event, Cabinet
-from scheduler.serializers import ClinicSerializer, EventSerializer, CabinetSerializer
+from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer
 from scheduler.permissions import IsAdministrator
 
 
@@ -49,8 +49,14 @@ class EventListApiView(generics.ListAPIView):
 
 class EventCreateApiView(generics.CreateAPIView):
     queryset = Event.objects.all()
-    serializer_class = EventSerializer
+    # serializer_class = EventSerializer
     permission_classes = [IsAdministrator]
+
+    def get_serializer_class(self):
+        print('REQUEST = ', self.request.data)
+        print('TYPE = ', type(self.request.data.get('client')))
+        print('CLIENT = ', self.request.data.get('client'))
+        return EventSerializer if (self.request.data.get('client')).is_integer() else EventCustomerSerializer
 
 
 class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
