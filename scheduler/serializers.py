@@ -4,6 +4,9 @@ from rest_framework import serializers
 from scheduler.models import Clinic, Cabinet, Event, Customer
 from django.contrib.auth.models import User
 from employee.models import Profile
+from employee.serializers import UserProfileWithoutPasswordSerializer
+from drf_writable_nested.serializers import WritableNestedModelSerializer
+from drf_writable_nested.mixins import UniqueFieldsMixin, NestedUpdateMixin
 
 
 class UserSerializer(ModelSerializer):
@@ -20,6 +23,12 @@ class UserClinicSerializer(ModelSerializer):
         fields = ('user', )
 
 
+class CustomerSerializer(ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+
 class CustomerClinicSerializer(ModelSerializer):
     class Meta:
         model = Customer
@@ -32,12 +41,27 @@ class EventSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class EventClinicSerializer(ModelSerializer):
-    client = CustomerClinicSerializer(many=False)
-    doctor = UserClinicSerializer(many=False)
+class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
+    client = CustomerSerializer()
 
     class Meta:
         model = Event
+        fields = ('cabinet', 'date_start', 'date_finish', 'service', 'status', 'color', 'doctor', 'client')
+
+    def create(self, validated_data):
+        client_data = validated_data.pop('client')
+        print(validated_data)
+        client = Customer.objects.create(**client_data)
+        return Event.objects.create(client=client, **validated_data)
+
+
+class EventClinicSerializer(ModelSerializer):
+    # client = CustomerClinicSerializer(many=False)
+    # doctor = UserClinicSerializer(many=False)
+
+    class Meta:
+        model = Event
+        depth = 1
         fields = ('id', 'date_start', 'date_finish', 'service', 'status', 'color', 'client', 'doctor')
 
 
@@ -70,6 +94,7 @@ class CabinetClinicSerializer(ModelSerializer):
 
 class ClinicSerializer(ModelSerializer):
     cabinets = serializers.SerializerMethodField(read_only=True)
+    # profile = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Clinic
@@ -86,3 +111,7 @@ class ClinicSerializer(ModelSerializer):
             queryset = queryset.filter(cabinet_events__doctor=self.context['profile']).distinct()
         return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date'],
                                                                      'profile': self.context['profile']}).data
+
+    # def get_profile(self, obj):
+    #     queryset = Profile.objects.filter(role='doctor')
+    #     return UserProfileWithoutPasswordSerializer(queryset, many=True).data
