@@ -1,6 +1,5 @@
 from django.db import models
 from timezone_field import TimeZoneField
-from django.utils.timezone import now
 from slugify import slugify
 from django.contrib.auth.models import User
 from employee.models import Profile
