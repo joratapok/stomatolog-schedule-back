@@ -15,6 +15,7 @@ from djoser.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import ValidationError
 from djoser.serializers import TokenSerializer
+from rest_framework.serializers import ModelSerializer
 
 
 class ProfileSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
@@ -63,6 +64,14 @@ class UserProfileWithoutPasswordSerializer(WritableNestedModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'profile', 'auth_token')
+
+
+class EventUserProfileSerializer(ModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'profile')
 
 
 class EmployeeTokenCreateSerializer(TokenCreateSerializer):

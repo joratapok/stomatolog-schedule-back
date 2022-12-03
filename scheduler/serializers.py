@@ -6,6 +6,7 @@ from drf_writable_nested.mixins import UniqueFieldsMixin
 from scheduler.models import Clinic, Cabinet, Event, Customer
 from django.contrib.auth.models import User
 from employee.models import Profile
+from employee.serializers import EventUserProfileSerializer, ProfileSerializer
 
 
 class UserSerializer(ModelSerializer):
@@ -85,10 +86,20 @@ class CabinetClinicSerializer(ModelSerializer):
 
 class ClinicSerializer(ModelSerializer):
     cabinets = serializers.SerializerMethodField(read_only=True)
+    doctors = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Clinic
-        fields = ('id', 'title', 'slug', 'cabinets', 'phone', 'is_active', 'start_of_the_day', 'end_of_the_day')
+        fields = ('id',
+                  'title',
+                  'slug',
+                  'cabinets',
+                  'phone',
+                  'is_active',
+                  'start_of_the_day',
+                  'end_of_the_day',
+                  'doctors'
+                  )
 
     def get_cabinets(self, obj):
         clinic = obj
@@ -97,3 +108,8 @@ class ClinicSerializer(ModelSerializer):
             queryset = queryset.filter(cabinet_events__doctor=self.context['profile']).distinct()
         return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date'],
                                                                      'profile': self.context['profile']}).data
+
+    def get_doctors(self, obj):
+        clinic = obj
+        queryset = User.objects.filter(profile__clinic=clinic, profile__role='doctor')
+        return EventUserProfileSerializer(queryset, many=True).data
