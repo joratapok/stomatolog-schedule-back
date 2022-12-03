@@ -9,4 +9,6 @@ urlpatterns = [
 
     path('cabinet/create/', views.CabinetCreateApiView.as_view()),
     path('cabinet/<int:pk>/', views.CabinetRetrieveUpdateDestroyAPIView.as_view()),
+
+    path('customer/', views.CustomerListApiView.as_view()),
 ]

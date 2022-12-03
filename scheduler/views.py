@@ -3,8 +3,9 @@ from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 
 from employee.models import Profile
-from scheduler.models import Clinic, Event, Cabinet
-from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer
+from scheduler.models import Clinic, Event, Cabinet, Customer
+from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
+    CustomerSerializer
 from scheduler.permissions import IsAdministrator
 
 
@@ -72,3 +73,17 @@ class CabinetRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
     permission_classes = [IsAdministrator]
+
+
+class CustomerListApiView(generics.ListAPIView):
+    serializer_class = CustomerSerializer
+    permission_classes = [IsAdministrator]
+
+    def get_last_name(self):
+        if 'last_name' in self.request.query_params:
+            return
+
+    def get_queryset(self):
+        if 'last_name' in self.request.query_params:
+            return Customer.objects.filter(last_name__istartswith=self.request.query_params['last_name'])[:10]
+        return Customer.objects.all()[:10]
