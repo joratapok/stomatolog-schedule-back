@@ -117,7 +117,7 @@ AUTH_PROFILE_MODULE = 'employee.Profile'
 
 REST_FRAMEWORK = {
 
-    'DATETIME_FORMAT': "%d.%m.%Y %H:%M",
+    'DATETIME_FORMAT': "%Y-%m-%d %H:%M",
 
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',

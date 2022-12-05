@@ -56,6 +56,17 @@ class UserProfileSerializer(WritableNestedModelSerializer):
 
         return instance
 
+    # def update(self, instance, validated_data):
+    #     profile_data = validated_data.pop('profile')
+    #     instance.profile.clinic.set(profile_data.pop('clinic'))
+    #     Profile.objects.filter(pk=instance.profile.pk).update(**profile_data)
+    #     User.objects.filter(pk=instance.pk).update(**validated_data)
+    #     # instance.profile.update(**profile_data)
+    #     # instance.update(**validated_data)
+    #     # Сохраняет со второго раза, почему??
+    #     #
+    #     return instance
+
 
 class UserProfileWithoutPasswordSerializer(WritableNestedModelSerializer):
     profile = ProfileSerializer()
