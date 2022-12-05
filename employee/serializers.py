@@ -52,6 +52,7 @@ class UserProfileSerializer(WritableNestedModelSerializer):
         profile.clinic.set(profile_data['clinic'])
 
         instance.set_password(instance.password)
+        print('serializer save password')
         instance.save()
 
         return instance

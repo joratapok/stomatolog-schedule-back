@@ -29,7 +29,6 @@ class UserCreateApiView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         instance = serializer.save()
-        print('INSTANCE.PROFILE = ', instance)
         instance.set_password(instance.password)
         instance.save()
 
