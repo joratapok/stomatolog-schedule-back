@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'djoser',
     'debug_toolbar',
     'corsheaders',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
