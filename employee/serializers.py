@@ -52,7 +52,6 @@ class UserProfileSerializer(WritableNestedModelSerializer):
         profile.clinic.set(profile_data['clinic'])
 
         instance.set_password(instance.password)
-        print('serializer save password')
         instance.save()
 
         return instance
@@ -83,24 +82,24 @@ class EventUserProfileSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'profile')
+        fields = ('id', 'username', 'first_name', 'last_name', 'profile')
 
 
-class EmployeeTokenCreateSerializer(TokenCreateSerializer):
-    """
-        Переопределение статус кода с HTTP_400_BAD_REQUEST на HTTP_403_FORBIDDEN
-        через class ValidationError
-    """
-    def validate(self, attrs):
-        password = attrs.get("password")
-        params = {settings.LOGIN_FIELD: attrs.get(settings.LOGIN_FIELD)}
-        self.user = authenticate(
-            request=self.context.get("request"), **params, password=password
-        )
-        if not self.user:
-            self.user = User.objects.filter(**params).first()
-            if self.user and not self.user.check_password(password):
-                raise ValidationError('permission_denied')
-        if self.user and self.user.is_active:
-            return attrs
-        raise ValidationError('permission_denied')
+# class EmployeeTokenCreateSerializer(TokenCreateSerializer):
+#     """
+#         Переопределение статус кода с HTTP_400_BAD_REQUEST на HTTP_403_FORBIDDEN
+#         через class ValidationError
+#     """
+#     def validate(self, attrs):
+#         password = attrs.get("password")
+#         params = {settings.LOGIN_FIELD: attrs.get(settings.LOGIN_FIELD)}
+#         self.user = authenticate(
+#             request=self.context.get("request"), **params, password=password
+#         )
+#         if not self.user:
+#             self.user = User.objects.filter(**params).first()
+#             if self.user and not self.user.check_password(password):
+#                 raise ValidationError('permission_denied')
+#         if self.user and self.user.is_active:
+#             return attrs
+#         raise ValidationError('permission_denied')
