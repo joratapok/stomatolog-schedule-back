@@ -36,6 +36,7 @@ class UserCreateApiView(generics.CreateAPIView):
 class UserUpdateDestroyAPIView(mixins.UpdateModelMixin,
                                mixins.DestroyModelMixin,
                                GenericAPIView):
+    queryset = User.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsOwner]
 
