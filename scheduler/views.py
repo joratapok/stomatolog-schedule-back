@@ -79,10 +79,6 @@ class CustomerListApiView(generics.ListAPIView):
     serializer_class = CustomerSerializer
     permission_classes = [IsAdministrator]
 
-    def get_last_name(self):
-        if 'last_name' in self.request.query_params:
-            return
-
     def get_queryset(self):
         if 'last_name' in self.request.query_params:
             return Customer.objects.filter(last_name__istartswith=self.request.query_params['last_name'])[:10]
