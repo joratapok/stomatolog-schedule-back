@@ -29,10 +29,10 @@ class CustomerSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class CustomerClinicSerializer(ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = ('id', 'first_name', 'last_name', 'middle_name')
+# class CustomerClinicSerializer(ModelSerializer):
+#     class Meta:
+#         model = Customer
+#         fields = ('id', 'first_name', 'last_name', 'middle_name')
 
 
 class EventSerializer(ModelSerializer):
