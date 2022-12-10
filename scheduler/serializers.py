@@ -8,19 +8,19 @@ from django.contrib.auth.models import User
 from employee.models import Profile
 from employee.serializers import EventUserProfileSerializer, ProfileSerializer
 
-
-class UserSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'first_name', 'last_name')
-
-
-class UserClinicSerializer(ModelSerializer):
-    user = UserSerializer(many=False)
-
-    class Meta:
-        model = Profile
-        fields = ('user', )
+# Неиспользуемые сериализаторы
+# class UserSerializer(ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ('id', 'first_name', 'last_name')
+#
+#
+# class UserClinicSerializer(ModelSerializer):
+#     user = UserSerializer(many=False)
+#
+#     class Meta:
+#         model = Profile
+#         fields = ('user', )
 
 
 class CustomerSerializer(ModelSerializer):
