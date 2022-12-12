@@ -26,7 +26,7 @@ from djoser.views import TokenCreateView, TokenDestroyView
 class UserCreateApiView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def perform_create(self, serializer):
         instance = serializer.save()
@@ -39,7 +39,7 @@ class UserUpdateDestroyAPIView(mixins.UpdateModelMixin,
                                GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def get_object(self, pk):
         try:

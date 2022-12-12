@@ -1,6 +1,8 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 from datetime import datetime
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from employee.models import Profile
 from scheduler.models import Clinic, Event, Cabinet, Customer
@@ -49,7 +51,7 @@ class EventListApiView(generics.ListAPIView):
 
 class EventCreateApiView(generics.CreateAPIView):
     queryset = Event.objects.all()
-    permission_classes = [IsAdministrator]
+    permission_classes = [IsAuthenticated, IsAdministrator]
 
     def get_serializer_class(self):
         if isinstance(self.request.data.get('client'), dict):
@@ -60,24 +62,24 @@ class EventCreateApiView(generics.CreateAPIView):
 class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [IsAdministrator]
+    permission_classes = [IsAuthenticated, IsAdministrator]
 
 
 class CabinetCreateApiView(generics.CreateAPIView):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
-    permission_classes = [IsAdministrator]
+    permission_classes = [IsAuthenticated, IsAdministrator]
 
 
 class CabinetRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
-    permission_classes = [IsAdministrator]
+    permission_classes = [IsAuthenticated, IsAdministrator]
 
 
 class CustomerListApiView(generics.ListAPIView):
     serializer_class = CustomerSerializer
-    permission_classes = [IsAdministrator]
+    permission_classes = [IsAuthenticated, IsAdministrator]
 
     def get_queryset(self):
         if 'last_name' in self.request.query_params:
