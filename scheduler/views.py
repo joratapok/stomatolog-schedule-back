@@ -82,6 +82,6 @@ class CustomerListApiView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdministrator]
 
     def get_queryset(self):
-        if 'last_name' in self.request.query_params:
-            return Customer.objects.filter(last_name__istartswith=self.request.query_params['last_name'])[:10]
+        if 'lastName' in self.request.query_params:
+            return Customer.objects.filter(last_name__istartswith=self.request.query_params['lastName'])[:10]
         return Customer.objects.all()[:10]
