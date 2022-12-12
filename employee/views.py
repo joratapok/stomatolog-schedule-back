@@ -20,7 +20,7 @@ from rest_framework import exceptions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
-from djoser.views import TokenCreateView
+from djoser.views import TokenCreateView, TokenDestroyView
 
 
 class UserCreateApiView(generics.CreateAPIView):
@@ -87,3 +87,10 @@ class ProfileTokenCreateView(TokenCreateView):
         Переопределение сериализатора класса TokenCreateView
     """
     serializer_class = ProfileTokenCreateSerializer
+
+
+class ProfileTokenDestroyView(TokenDestroyView):
+    """
+        Переопределение urls класса TokenDestroyView
+    """
+    pass
