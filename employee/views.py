@@ -7,19 +7,19 @@ from rest_framework import status
 from djoser.views import TokenCreateView, TokenDestroyView
 
 from employee.models import Profile
-from employee.serializers import ProfileTokenCreateSerializer, ProfileListSerializer, ProfileTokenSerializer
+from employee.serializers import ProfileTokenCreateSerializer, ProfileSerializer, ProfileTokenSerializer
 from employee.permissions import IsOwner
 
 
 class ProfileCreateApiView(generics.CreateAPIView):
     queryset = Profile.objects.all()
-    serializer_class = ProfileListSerializer
+    serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
 
 class ProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
-    serializer_class = ProfileListSerializer
+    serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
     def delete(self, request, pk):

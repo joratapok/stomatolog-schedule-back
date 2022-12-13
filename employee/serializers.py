@@ -8,7 +8,7 @@ from djoser.serializers import TokenCreateSerializer
 from employee.models import Profile
 
 
-class ProfileListSerializer(ModelSerializer):
+class ProfileSerializer(ModelSerializer):
     username = serializers.CharField(source='user.username')
     password = serializers.CharField(source='user.password')
     first_name = serializers.CharField(source='user.first_name')
@@ -57,7 +57,7 @@ class ProfileListSerializer(ModelSerializer):
         return instance
 
 
-class ProfileTokenSerializer(ProfileListSerializer):
+class ProfileTokenSerializer(ProfileSerializer):
     token = serializers.CharField(source='user.auth_token.key')
 
     class Meta:
@@ -77,7 +77,7 @@ class ProfileTokenSerializer(ProfileListSerializer):
         )
 
 
-class EventProfileSerializer(ProfileListSerializer):
+class EventProfileSerializer(ProfileSerializer):
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response.pop('password', None)
