@@ -33,8 +33,11 @@ class ProfileSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        user = User.objects.create(**user_data)
-        user.set_password(user_data['password'])
+        if user_data:
+            password = user_data.pop('password')
+            user = User.objects.create(**user_data)
+            if password and not user.check_password(password):
+                user.set_password(password)
 
         clinic = validated_data.pop('clinic')
         profile = Profile.objects.create(user=user, **validated_data)
@@ -46,6 +49,8 @@ class ProfileSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
+        if validated_data['image'] is None:
+            validated_data['image'] = instance.image
         instance = super().update(instance, validated_data)
         if user_data:
             password = user_data.pop('password', None)
