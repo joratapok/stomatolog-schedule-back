@@ -11,71 +11,60 @@ from djoser.serializers import TokenCreateSerializer
 from employee.models import Profile
 
 
-class ProfileSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
-    date_of_birth = serializers.DateField()
-
-    class Meta:
-        model = Profile
-        fields = ('middle_name', 'role', 'date_of_birth', 'phone', 'image', 'speciality', 'clinic')
-
-
-class UserProfileSerializer(WritableNestedModelSerializer):
-    profile = ProfileSerializer()
-
-    class Meta:
-        model = User
-        fields = ('username', 'password', 'first_name', 'last_name', 'profile')
-
-    def update(self, instance, validated_data):
-        instance.username = validated_data.get('username', instance.username)
-        instance.password = validated_data.get('password', instance.password)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-
-        profile = instance.profile
-        profile_data = validated_data.pop('profile')
-
-        profile.middle_name = profile_data['middle_name']
-        profile.role = profile_data['role']
-        profile.phone = profile_data['phone']
-        profile.date_of_birth = profile_data['date_of_birth']
-        if profile_data['image']:
-            profile.image = profile_data['image']
-        profile.speciality = profile_data['speciality']
-        profile.clinic.set(profile_data['clinic'])
-
-        instance.set_password(instance.password)
-        instance.save()
-
-        return instance
-
-    # def update(self, instance, validated_data):
-    #     profile_data = validated_data.pop('profile')
-    #     instance.profile.clinic.set(profile_data.pop('clinic'))
-    #     Profile.objects.filter(pk=instance.profile.pk).update(**profile_data)
-    #     User.objects.filter(pk=instance.pk).update(**validated_data)
-    #     # instance.profile.update(**profile_data)
-    #     # instance.update(**validated_data)
-    #     # Сохраняет со второго раза, почему??
-    #     #
-    #     return instance
+# class ProfileSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
+#     date_of_birth = serializers.DateField()
+#
+#     class Meta:
+#         model = Profile
+#         fields = ('middle_name', 'role', 'date_of_birth', 'phone', 'image', 'speciality', 'clinic')
+#
+#
+# class UserProfileSerializer(WritableNestedModelSerializer):
+#     profile = ProfileSerializer()
+#
+#     class Meta:
+#         model = User
+#         fields = ('username', 'password', 'first_name', 'last_name', 'profile')
+#
+#     def update(self, instance, validated_data):
+#         instance.username = validated_data.get('username', instance.username)
+#         instance.password = validated_data.get('password', instance.password)
+#         instance.first_name = validated_data.get('first_name', instance.first_name)
+#         instance.last_name = validated_data.get('last_name', instance.last_name)
+#
+#         profile = instance.profile
+#         profile_data = validated_data.pop('profile')
+#
+#         profile.middle_name = profile_data['middle_name']
+#         profile.role = profile_data['role']
+#         profile.phone = profile_data['phone']
+#         profile.date_of_birth = profile_data['date_of_birth']
+#         if profile_data['image']:
+#             profile.image = profile_data['image']
+#         profile.speciality = profile_data['speciality']
+#         profile.clinic.set(profile_data['clinic'])
+#
+#         instance.set_password(instance.password)
+#         instance.save()
+#
+#         return instance
 
 
-class UserProfileWithoutPasswordSerializer(WritableNestedModelSerializer):
-    profile = ProfileSerializer()
-    auth_token = TokenSerializer()
+# class UserProfileWithoutPasswordSerializer(WritableNestedModelSerializer):
+#     profile = ProfileSerializer()
+#     auth_token = TokenSerializer()
+#
+#     class Meta:
+#         model = User
+#         fields = ('username', 'first_name', 'last_name', 'profile', 'auth_token')
 
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'profile', 'auth_token')
 
-
-class EventUserProfileSerializer(ModelSerializer):
-    profile = ProfileSerializer()
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'profile')
+# class EventUserProfileSerializer(ModelSerializer):
+#     profile = ProfileSerializer()
+#
+#     class Meta:
+#         model = User
+#         fields = ('id', 'username', 'first_name', 'last_name', 'profile')
 
 
 class ProfileTokenCreateSerializer(TokenCreateSerializer):
@@ -97,3 +86,96 @@ class ProfileTokenCreateSerializer(TokenCreateSerializer):
         if self.user and self.user.is_active:
             return attrs
         raise PermissionDenied('permission_denied')
+
+
+# class UserSerializer(ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ('username', 'first_name', 'last_name', 'is_staff')
+
+
+class ProfileListSerializer(ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    password = serializers.CharField(source='user.password')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+    date_of_birth = serializers.DateField()
+
+    class Meta:
+        model = Profile
+        fields = (
+            'username',
+            'password',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'role',
+            'date_of_birth',
+            'phone',
+            'image',
+            'speciality',
+            'clinic'
+        )
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = User.objects.create(**user_data)
+        user.set_password(user_data['password'])
+
+        clinic = validated_data.pop('clinic')
+        profile = Profile.objects.create(user=user, **validated_data)
+        profile.clinic.set(clinic)
+
+        user.save()
+        profile.save()
+        return profile
+
+    def update(self, instance, validated_data):
+        User.objects.filter(pk=instance.user.pk).update(**validated_data.pop('user'))
+        user = User.objects.get(pk=instance.user.pk)
+        user.set_password(validated_data.pop('password'))
+        user.save()
+
+        super().update(instance, validated_data)
+
+        instance.refresh_from_db()
+        return instance
+
+    # def update(self, instance, validated_data):
+    #     user_data = validated_data.pop('user')
+    #     User.objects.filter(pk=instance.user.pk).update(**user_data)
+    #     # instance.user.set_password(user_data['password'])
+    #
+    #     clinic = validated_data.pop('clinic')
+    #     Profile.objects.filter(pk=instance.pk).update(**validated_data)
+    #     instance.clinic.set(clinic)
+    #
+    #     instance.refresh_from_db()
+    #     return instance
+
+
+class ProfileTokenSerializer(ProfileListSerializer):
+    token = serializers.CharField(source='user.auth_token.key')
+
+    class Meta:
+        model = Profile
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'role',
+            'date_of_birth',
+            'phone',
+            'image',
+            'speciality',
+            'clinic',
+            'token'
+        )
+
+
+class EventProfileSerializer(ProfileListSerializer):
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response.pop('password', None)
+        return response

@@ -6,7 +6,7 @@ from drf_writable_nested.mixins import UniqueFieldsMixin
 from scheduler.models import Clinic, Cabinet, Event, Customer
 from django.contrib.auth.models import User
 from employee.models import Profile
-from employee.serializers import EventUserProfileSerializer, ProfileSerializer
+from employee.serializers import EventProfileSerializer
 
 # Неиспользуемые сериализаторы
 # class UserSerializer(ModelSerializer):
@@ -111,5 +111,5 @@ class ClinicSerializer(ModelSerializer):
 
     def get_doctors(self, obj):
         clinic = obj
-        queryset = User.objects.filter(profile__clinic=clinic, profile__role='doctor')
-        return EventUserProfileSerializer(queryset, many=True).data
+        queryset = Profile.objects.filter(clinic=clinic, role='doctor')
+        return EventProfileSerializer(queryset, many=True).data
