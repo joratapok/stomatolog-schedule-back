@@ -96,6 +96,7 @@ class ClinicSerializer(ModelSerializer):
                   'cabinets',
                   'phone',
                   'is_active',
+                  'is_main',
                   'start_of_the_day',
                   'end_of_the_day',
                   'doctors'

@@ -35,10 +35,12 @@ class Clinic(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Активна')
     start_of_the_day = models.CharField(max_length=10, default='08:00', verbose_name='Начало рабочего дня')
     end_of_the_day = models.CharField(max_length=10, default='17:00', verbose_name='Конец рабочего дня')
+    is_main = models.BooleanField(default=False, verbose_name='Является главной')
 
     class Meta:
         verbose_name = 'Клиника'
         verbose_name_plural = 'Клиники'
+        ordering = ['-is_main']
 
     def __str__(self):
         return f'{self.id} {self.title}'
