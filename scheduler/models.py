@@ -66,6 +66,27 @@ class Cabinet(models.Model):
         return f'{self.name}  ---  {self.clinic.title} --- {self.pk}'
 
 
+class DutyShift(models.Model):
+    date_start = models.DateTimeField(verbose_name='Дата и время начала дежурства')
+    date_finish = models.DateTimeField(verbose_name='Дата и время окончания дежурства')
+    doctor = models.OneToOneField(to=Profile,
+                                  on_delete=models.CASCADE,
+                                  related_name='duty_shift',
+                                  verbose_name='Доктор')
+
+    cabinet = models.ForeignKey(to=Cabinet,
+                                on_delete=models.CASCADE,
+                                related_name='duty_shift_cabinet',
+                                verbose_name='Кабинет')
+
+    class Meta:
+        verbose_name = 'Дежурство'
+        verbose_name_plural = 'Дежурства'
+
+    def __str__(self):
+        return f'{self.doctor} {self.cabinet}'
+
+
 class Event(models.Model):
 
     STATUS = (

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
 
-from scheduler.models import Clinic, Cabinet, Event, Customer
+from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from django.contrib.auth.models import User
 from employee.models import Profile
 from employee.serializers import EventProfileSerializer
@@ -67,12 +67,19 @@ class CabinetSerializer(ModelSerializer):
         fields = ('clinic', 'name')
 
 
+class DutyShiftSerializer(ModelSerializer):
+    class Meta:
+        model = DutyShift
+        fields = '__all__'
+
+
 class CabinetClinicSerializer(ModelSerializer):
     cabinet_events = serializers.SerializerMethodField(read_only=True)
+    duty_shift = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Cabinet
-        fields = ('id', 'name', 'cabinet_events')
+        fields = ('id', 'name', 'cabinet_events', 'duty_shift')
 
     def get_cabinet_events(self, obj):
         cabinet = obj
@@ -82,6 +89,11 @@ class CabinetClinicSerializer(ModelSerializer):
             queryset = queryset.filter(doctor=self.context['profile']).distinct()
 
         return EventClinicSerializer(queryset, many=True).data
+
+    def get_duty_shift(self, obj):
+        cabinet = obj
+        queryset = cabinet.duty_shift_cabinet.all()
+        return DutyShiftSerializer(queryset, many=True).data
 
 
 class ClinicSerializer(ModelSerializer):
