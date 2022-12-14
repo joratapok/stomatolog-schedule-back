@@ -18,6 +18,7 @@ class ProfileSerializer(ModelSerializer):
     class Meta:
         model = Profile
         fields = (
+            'id',
             'username',
             'password',
             'first_name',
@@ -68,6 +69,7 @@ class ProfileTokenSerializer(ProfileSerializer):
     class Meta:
         model = Profile
         fields = (
+            'id',
             'username',
             'first_name',
             'last_name',
