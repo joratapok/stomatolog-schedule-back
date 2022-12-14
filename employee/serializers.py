@@ -37,7 +37,7 @@ class ProfileSerializer(ModelSerializer):
         if user_data:
             password = user_data.pop('password')
             user = User.objects.create(**user_data)
-            if password and not user.check_password(password):
+            if password and user.password != password:
                 user.set_password(password)
 
         clinic = validated_data.pop('clinic')
@@ -53,11 +53,12 @@ class ProfileSerializer(ModelSerializer):
         if validated_data['image'] is None:
             validated_data['image'] = instance.image
         instance = super().update(instance, validated_data)
+
         if user_data:
             password = user_data.pop('password', None)
             for field_name, value in user_data.items():
                 setattr(instance.user, field_name, value)
-            if password and not instance.user.check_password(password):
+            if password and instance.user.password != password:
                 instance.user.set_password(password)
             instance.user.save()
         return instance
