@@ -26,7 +26,7 @@ class EventListApiView(generics.ListAPIView):
     def get_serializer_context(self):
         return {'request': self.request,
                 'filter_date': self.get_filter_date(),
-                'profile': Profile.objects.get(user=self.request.user),
+                'profile': self.request.user.profile,
                 }
 
     def get_queryset(self):
