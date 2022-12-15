@@ -1,8 +1,6 @@
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
 from datetime import datetime
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from employee.models import Profile
 from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
@@ -19,7 +17,7 @@ class EventListApiView(generics.ListAPIView):
 
     def get_filter_date(self):
         if 'date' in self.request.query_params:
-            # date format is day-month-year
+            # date format from url is day-month-year
             date = self.request.query_params['date']
             return f'{date[6:]}-{date[3:5]}-{date[:2]}'
         else:
@@ -32,22 +30,18 @@ class EventListApiView(generics.ListAPIView):
                 }
 
     def get_queryset(self):
-        print(self.get_filter_date())
         queryset = Clinic.objects.filter(
             cabinets__cabinet_events__date_start__startswith=self.get_filter_date()).distinct()
 
         if not queryset:
             queryset = Clinic.objects.all()
 
-        profile = Profile.objects.get(user=self.request.user)
+        profile = self.request.user.profile
 
-        if profile.role == 'administrator':
-            return queryset.filter(id=profile.clinic.first().id).distinct()
-        elif profile.role == 'owner':
+        if profile.role == 'owner' or profile.role == 'administrator':
             return queryset.distinct()
         elif profile.role == 'doctor':
             return queryset.filter(cabinets__cabinet_events__doctor=profile).distinct()
-        return queryset
 
 
 class EventCreateApiView(generics.CreateAPIView):

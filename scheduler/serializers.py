@@ -4,35 +4,14 @@ from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
 
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
-from django.contrib.auth.models import User
 from employee.models import Profile
 from employee.serializers import EventProfileSerializer
-
-# Неиспользуемые сериализаторы
-# class UserSerializer(ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ('id', 'first_name', 'last_name')
-#
-#
-# class UserClinicSerializer(ModelSerializer):
-#     user = UserSerializer(many=False)
-#
-#     class Meta:
-#         model = Profile
-#         fields = ('user', )
 
 
 class CustomerSerializer(ModelSerializer):
     class Meta:
         model = Customer
         fields = '__all__'
-
-
-# class CustomerClinicSerializer(ModelSerializer):
-#     class Meta:
-#         model = Customer
-#         fields = ('id', 'first_name', 'last_name', 'middle_name')
 
 
 class EventSerializer(ModelSerializer):
