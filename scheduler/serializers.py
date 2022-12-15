@@ -55,6 +55,8 @@ class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer)
 
 
 class EventClinicSerializer(ModelSerializer):
+    doctor = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+
     class Meta:
         model = Event
         depth = 1
