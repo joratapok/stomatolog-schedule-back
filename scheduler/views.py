@@ -5,11 +5,10 @@ from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from employee.models import Profile
-from scheduler.models import Clinic, Event, Cabinet, Customer
+from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
-    CustomerSerializer
-from scheduler.permissions import IsAdministrator
-
+    CustomerSerializer, DutyShiftSerializer
+from scheduler.permissions import IsOwnerOrAdministrator
 
 TODAY_DATE = datetime.today().date()
 
@@ -33,6 +32,7 @@ class EventListApiView(generics.ListAPIView):
                 }
 
     def get_queryset(self):
+        print(self.get_filter_date())
         queryset = Clinic.objects.filter(
             cabinets__cabinet_events__date_start__startswith=self.get_filter_date()).distinct()
 
@@ -47,11 +47,12 @@ class EventListApiView(generics.ListAPIView):
             return queryset.distinct()
         elif profile.role == 'doctor':
             return queryset.filter(cabinets__cabinet_events__doctor=profile).distinct()
+        return queryset
 
 
 class EventCreateApiView(generics.CreateAPIView):
     queryset = Event.objects.all()
-    permission_classes = [IsAuthenticated, IsAdministrator]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
     def get_serializer_class(self):
         if isinstance(self.request.data.get('client'), dict):
@@ -62,26 +63,38 @@ class EventCreateApiView(generics.CreateAPIView):
 class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated, IsAdministrator]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
 
 class CabinetCreateApiView(generics.CreateAPIView):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
-    permission_classes = [IsAuthenticated, IsAdministrator]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
 
 class CabinetRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
-    permission_classes = [IsAuthenticated, IsAdministrator]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
 
 class CustomerListApiView(generics.ListAPIView):
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated, IsAdministrator]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
     def get_queryset(self):
         if 'lastName' in self.request.query_params:
             return Customer.objects.filter(last_name__istartswith=self.request.query_params['lastName'])[:10]
         return Customer.objects.all()[:10]
+
+
+class DutyShiftListCreateApiView(generics.ListCreateAPIView):
+    queryset = DutyShift.objects.all()
+    serializer_class = DutyShiftSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+
+
+class DutyShiftRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DutyShift.objects.all()
+    serializer_class = DutyShiftSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]

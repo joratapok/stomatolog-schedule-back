@@ -11,4 +11,7 @@ urlpatterns = [
     path('cabinet/<int:pk>/', views.CabinetRetrieveUpdateDestroyAPIView.as_view()),
 
     path('customer/', views.CustomerListApiView.as_view()),
+
+    path('duty_shift/', views.DutyShiftListCreateApiView.as_view()),
+    path('duty_shift/<int:pk>/', views.DutyShiftRetrieveUpdateDestroyAPIView.as_view()),
 ]
