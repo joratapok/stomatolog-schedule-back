@@ -2,7 +2,6 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 
-from employee.models import Profile
 from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
     CustomerSerializer, DutyShiftSerializer
@@ -12,6 +11,7 @@ TODAY_DATE = datetime.today().date()
 
 
 class EventListApiView(generics.ListAPIView):
+    queryset = Clinic.objects.all()
     serializer_class = ClinicSerializer
     permission_classes = [IsAuthenticated]
 
@@ -24,24 +24,11 @@ class EventListApiView(generics.ListAPIView):
             return TODAY_DATE
 
     def get_serializer_context(self):
-        return {'request': self.request,
-                'filter_date': self.get_filter_date(),
-                'profile': self.request.user.profile,
-                }
-
-    def get_queryset(self):
-        queryset = Clinic.objects.filter(
-            cabinets__cabinet_events__date_start__startswith=self.get_filter_date()).distinct()
-
-        if not queryset:
-            queryset = Clinic.objects.all()
-
-        profile = self.request.user.profile
-
-        if profile.role == 'owner' or profile.role == 'administrator':
-            return queryset.distinct()
-        elif profile.role == 'doctor':
-            return queryset.filter(cabinets__cabinet_events__doctor=profile).distinct()
+        return {
+            'request': self.request,
+            'filter_date': self.get_filter_date(),
+            'profile': self.request.user.profile,
+            }
 
 
 class EventCreateApiView(generics.CreateAPIView):
