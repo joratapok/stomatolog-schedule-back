@@ -12,6 +12,6 @@ urlpatterns = [
 
     path('customer/', views.CustomerListApiView.as_view()),
 
-    path('duty_shift/', views.DutyShiftListCreateApiView.as_view()),
-    path('duty_shift/<int:pk>/', views.DutyShiftRetrieveUpdateDestroyAPIView.as_view()),
+    path('duty-shift/', views.DutyShiftListCreateApiView.as_view()),
+    path('duty-shift/<int:pk>/', views.DutyShiftRetrieveUpdateDestroyAPIView.as_view()),
 ]
