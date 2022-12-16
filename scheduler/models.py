@@ -69,10 +69,10 @@ class Cabinet(models.Model):
 class DutyShift(models.Model):
     date_start = models.DateTimeField(verbose_name='Дата и время начала дежурства')
     date_finish = models.DateTimeField(verbose_name='Дата и время окончания дежурства')
-    doctor = models.OneToOneField(to=Profile,
-                                  on_delete=models.CASCADE,
-                                  related_name='duty_shift',
-                                  verbose_name='Доктор')
+    doctor = models.ForeignKey(to=Profile,
+                               on_delete=models.CASCADE,
+                               related_name='duty_shift',
+                               verbose_name='Доктор')
 
     cabinet = models.ForeignKey(to=Cabinet,
                                 on_delete=models.CASCADE,
