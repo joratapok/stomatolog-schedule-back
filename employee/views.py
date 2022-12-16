@@ -18,7 +18,7 @@ class ProfileCreateApiView(generics.CreateAPIView):
 
 
 class ProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.all().select_related('user').prefetch_related('clinic')
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
@@ -30,13 +30,13 @@ class ProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         return Response(status.HTTP_204_NO_CONTENT)
 
 
-class UserRetrieveAPIView(generics.RetrieveAPIView):
+class ProfileRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = ProfileTokenSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         try:
-            return Profile.objects.get(user=self.request.user)
+            return Profile.objects.select_related('user').get(user=self.request.user)
         except Profile.DoesNotExist:
             raise Http404
 
