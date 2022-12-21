@@ -11,7 +11,7 @@ TODAY_DATE = datetime.today().date()
 
 
 class EventListApiView(generics.ListAPIView):
-    queryset = Clinic.objects.all()
+    queryset = Clinic.objects.prefetch_related('cabinets', 'cabinets__duty_shift_cabinet')
     serializer_class = ClinicSerializer
     permission_classes = [IsAuthenticated]
 

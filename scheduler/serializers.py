@@ -4,7 +4,6 @@ from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
 
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
-from employee.models import Profile
 from employee.serializers import EventProfileSerializer
 
 
@@ -98,6 +97,7 @@ class ClinicSerializer(ModelSerializer):
     def get_cabinets(self, obj):
         clinic = obj
         queryset = clinic.cabinets.all()
+
         if self.context['profile'].role == 'doctor':
             queryset = queryset.filter(cabinet_events__doctor=self.context['profile']).distinct()
         return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date'],
@@ -105,5 +105,5 @@ class ClinicSerializer(ModelSerializer):
 
     def get_doctors(self, obj):
         clinic = obj
-        queryset = Profile.objects.filter(clinic=clinic, role='doctor')
+        queryset = clinic.profiles.filter(role='doctor')
         return EventProfileSerializer(queryset, many=True).data
