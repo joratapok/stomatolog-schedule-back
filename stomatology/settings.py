@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'scheduler.apps.SchedulerConfig',
     'employee.apps.EmployeeConfig',
+    'price.apps.PriceConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',

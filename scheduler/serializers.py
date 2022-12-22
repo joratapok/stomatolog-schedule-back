@@ -91,7 +91,8 @@ class ClinicSerializer(ModelSerializer):
                   'is_main',
                   'start_of_the_day',
                   'end_of_the_day',
-                  'doctors'
+                  'doctors',
+                  'price_list'
                   )
 
     def get_cabinets(self, obj):

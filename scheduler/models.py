@@ -3,6 +3,7 @@ from timezone_field import TimeZoneField
 from slugify import slugify
 from django.contrib.auth.models import User
 from employee.models import Profile
+from price.models import PriceList
 
 
 class Customer(models.Model):
@@ -36,6 +37,12 @@ class Clinic(models.Model):
     start_of_the_day = models.CharField(max_length=10, default='08:00', verbose_name='Начало рабочего дня')
     end_of_the_day = models.CharField(max_length=10, default='17:00', verbose_name='Конец рабочего дня')
     is_main = models.BooleanField(default=False, verbose_name='Является главной')
+    price_list = models.ForeignKey(PriceList,
+                                   on_delete=models.SET_NULL,
+                                   blank=True,
+                                   null=True,
+                                   related_name='clinic_services',
+                                   verbose_name='Прайс-лист')
 
     class Meta:
         verbose_name = 'Клиника'
