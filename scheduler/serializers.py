@@ -5,6 +5,7 @@ from drf_writable_nested.mixins import UniqueFieldsMixin
 
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from employee.serializers import EventProfileSerializer
+from employee.models import Profile
 
 
 class CustomerSerializer(ModelSerializer):
@@ -72,7 +73,7 @@ class CabinetClinicSerializer(ModelSerializer):
 
     def get_duty_shift(self, obj):
         cabinet = obj
-        queryset = cabinet.duty_shift_cabinet.all()
+        queryset = cabinet.duty_shift_cabinet.filter(date_start__startswith=self.context['filter_date'])
         return DutyShiftSerializer(queryset, many=True).data
 
 
