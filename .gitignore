@@ -6,4 +6,5 @@ __pycache__
 stomatology/__pycache__/
 scheduler/__pycache__/
 scheduler/migrations/__pycache__/
+static
 
