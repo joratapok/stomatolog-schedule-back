@@ -22,6 +22,6 @@ class Profile(models.Model):
         verbose_name_plural = 'Профили'
 
     def __str__(self):
-        if self.user.first_name and self.user.last_name:
-            return f'{self.user.last_name} {self.user.first_name}'
-        return f'{self.user}'
+        # if self.user.first_name and self.user.last_name:
+        #     return f'{self.user.last_name} {self.user.first_name}'
+        return f'{self.role}'
