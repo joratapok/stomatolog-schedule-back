@@ -23,7 +23,7 @@ class ServiceListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         if 'service' in self.request.query_params:
-            return Service.objects.filter(title__istartswith=self.request.query_params['service'])[:10]
+            return Service.objects.filter(title__icontains=self.request.query_params['service'])[:10]
         return Service.objects.all()[:10]
 
 
