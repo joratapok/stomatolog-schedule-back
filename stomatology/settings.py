@@ -158,9 +158,6 @@ USE_I18N = True
 # Если True, то использует часовой пояс TIME_ZONE, иначе использует местное время.
 USE_TZ = False
 
-# DATETIME_FORMAT = "%Y-%m-%d%H:%M"
-#
-# L10N = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -182,3 +179,8 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+# Celery settings
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_TIMEZONE = 'Asia/Barnaul'
+CELERY_ENABLE_UTC = False

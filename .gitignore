@@ -7,4 +7,7 @@ stomatology/__pycache__/
 scheduler/__pycache__/
 scheduler/migrations/__pycache__/
 static
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir
 
