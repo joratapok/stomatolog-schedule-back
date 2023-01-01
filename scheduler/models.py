@@ -3,7 +3,7 @@ from timezone_field import TimeZoneField
 from slugify import slugify
 from django.contrib.auth.models import User
 from employee.models import Profile
-from price.models import PriceList
+from price.models import PriceList, Service
 
 
 class Customer(models.Model):
@@ -111,7 +111,7 @@ class Event(models.Model):
 
     date_start = models.DateTimeField(verbose_name='Дата и время начала приема')
     date_finish = models.DateTimeField(verbose_name='Дата и время окончания приема')
-    service = models.CharField(max_length=255, verbose_name='Услуга', null=True, blank=True)
+    services = models.ManyToManyField(to=Service, verbose_name='Услуги', related_name='service_events')
     status = models.CharField(max_length=255, choices=STATUS, default='not_confirmed')
     color = models.CharField(max_length=255, verbose_name='Цвет', null=True, blank=True)
 

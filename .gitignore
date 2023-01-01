@@ -6,6 +6,9 @@ __pycache__
 stomatology/__pycache__/
 scheduler/__pycache__/
 scheduler/migrations/__pycache__/
+scheduler/migrations/
+price/migrations
+employee/migrations
 static
 celerybeat-schedule.bak
 celerybeat-schedule.dat

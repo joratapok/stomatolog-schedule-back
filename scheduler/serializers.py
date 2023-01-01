@@ -5,7 +5,7 @@ from drf_writable_nested.mixins import UniqueFieldsMixin
 
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from employee.serializers import EventProfileSerializer
-from employee.models import Profile
+from price.serializers import ServiceSerializer
 
 
 class CustomerSerializer(ModelSerializer):
@@ -39,7 +39,7 @@ class EventClinicSerializer(ModelSerializer):
     class Meta:
         model = Event
         depth = 1
-        fields = ('id', 'date_start', 'date_finish', 'service', 'status', 'color', 'client', 'doctor')
+        fields = ('id', 'date_start', 'date_finish', 'services', 'status', 'color', 'client', 'doctor')
 
 
 class CabinetSerializer(ModelSerializer):
