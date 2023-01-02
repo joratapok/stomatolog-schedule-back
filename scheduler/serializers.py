@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
+from price.models import Service
 
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from employee.serializers import EventProfileSerializer
@@ -25,12 +26,17 @@ class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer)
 
     class Meta:
         model = Event
-        fields = ('cabinet', 'date_start', 'date_finish', 'service', 'status', 'color', 'doctor', 'client')
+        fields = ('cabinet', 'date_start', 'date_finish', 'services', 'status', 'color', 'doctor', 'client')
 
     def create(self, validated_data):
+        services_data = validated_data.pop('services')
         client_data = validated_data.pop('client')
         client = Customer.objects.create(**client_data)
-        return Event.objects.create(client=client, **validated_data)
+
+        new_event = Event.objects.create(client=client, **validated_data)
+        new_event.services.set(services_data)
+        new_event.save()
+        return new_event
 
 
 class EventClinicSerializer(ModelSerializer):
