@@ -32,7 +32,6 @@ class ServiceListCreateAPIView(generics.ListCreateAPIView):
         queryset = Service.objects.all()
         if 'service' in self.request.query_params:
             filter_queryset = queryset
-            print(self.split_input_parameter())
             for filter_word in self.split_input_parameter():
                 filter_queryset = filter_queryset.filter(title__icontains=filter_word)
             return filter_queryset[:10]
