@@ -4,6 +4,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from price.models import PriceList, Service
 from price.serializers import PriceListSerializer, ServiceSerializer
 from scheduler.permissions import IsOwnerOrAdministrator
+import re
 
 
 class PriceListCreateAPIView(generics.ListCreateAPIView):
@@ -22,17 +23,20 @@ class ServiceListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ServiceSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
-    # def get_queryset(self):
-    #     if 'service' in self.request.query_params:
-    #         return Service.objects.filter(title__icontains=self.request.query_params['service'])[:10]
-    #     return Service.objects.all()[:10]
+    def split_input_parameter(self):
+        chars = re.findall(r'[а-яА-Яa-zA-Z]+', self.request.query_params['service'])
+        nums = re.findall(r'\d+', self.request.query_params['service'])
+        return chars + nums
 
     def get_queryset(self):
+        queryset = Service.objects.all()
         if 'service' in self.request.query_params:
-            return Service.objects.annotate(
-                similarity=TrigramSimilarity('title', self.request.query_params['service']),
-                ).filter(similarity__gt=0.1)[:10]
-        return Service.objects.all()[:10]
+            filter_queryset = queryset
+            print(self.split_input_parameter())
+            for filter_word in self.split_input_parameter():
+                filter_queryset = filter_queryset.filter(title__icontains=filter_word)
+            return filter_queryset[:10]
+        return queryset[:10]
 
 
 class ServiceRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):

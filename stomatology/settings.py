@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'import_export',
-    'django.contrib.postgres'
 ]
 
 MIDDLEWARE = [
