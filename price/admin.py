@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from import_export import resources
-from price.models import PriceList, Service
+from price.models import PriceList, Service, Teeth, DentalChart
 
 
 class ServiceResource(resources.ModelResource):
@@ -15,3 +15,5 @@ class ServiceAdmin(ImportExportModelAdmin):
 
 admin.site.register(PriceList)
 admin.site.register(Service, ServiceAdmin)
+admin.site.register(Teeth)
+admin.site.register(DentalChart)

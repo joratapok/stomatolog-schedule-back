@@ -2,23 +2,35 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
-from price.models import Service
+from price.models import Service, Teeth
 
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from employee.serializers import EventProfileSerializer
-from price.serializers import ServiceSerializer
+from price.serializers import TeethSerializer, DentalChartSerializer
 
 
 class CustomerSerializer(ModelSerializer):
+    dental_chart = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Customer
         fields = '__all__'
 
+    def get_dental_chart(self, customer):
+        queryset = customer.dental_chart
+        return DentalChartSerializer(queryset).data
+
 
 class EventSerializer(ModelSerializer):
+    numbers_tooth = serializers.IntegerField(source='client.customer_events.dental_chart.teeth.tooth_number', read_only=False)
+
     class Meta:
         model = Event
         fields = '__all__'
+
+    def create(self, validated_data):
+        print('VALID = ', validated_data)
+        super().create(self.validated_data)
 
 
 class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
@@ -41,11 +53,16 @@ class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer)
 
 class EventClinicSerializer(ModelSerializer):
     doctor = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+    teeth_services = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Event
         depth = 1
-        fields = ('id', 'date_start', 'date_finish', 'services', 'status', 'color', 'client', 'doctor')
+        fields = ('id', 'date_start', 'date_finish', 'teeth_services', 'status', 'color', 'client', 'doctor')
+
+    def get_teeth_services(self, event):
+        queryset = event.client.dental_chart.teeth.all()
+        return TeethSerializer(queryset, many=True).data
 
 
 class CabinetSerializer(ModelSerializer):

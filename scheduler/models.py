@@ -111,7 +111,7 @@ class Event(models.Model):
 
     date_start = models.DateTimeField(verbose_name='Дата и время начала приема')
     date_finish = models.DateTimeField(verbose_name='Дата и время окончания приема')
-    services = models.ManyToManyField(to=Service, verbose_name='Услуги', related_name='service_events', null=True, blank=True)
+    services = models.ManyToManyField(to=Service, verbose_name='Услуги', related_name='service_events', blank=True)
     status = models.CharField(max_length=255, choices=STATUS, default='not_confirmed')
     color = models.CharField(max_length=255, verbose_name='Цвет', null=True, blank=True)
 

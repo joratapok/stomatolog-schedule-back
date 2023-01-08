@@ -35,3 +35,33 @@ class Service(models.Model):
 
     def __str__(self):
         return f'{self.title} {self.price}'
+
+
+class DentalChart(models.Model):
+    """Модель Зубная карта пациента"""
+    client = models.OneToOneField(
+        to='scheduler.Customer',
+        on_delete=models.CASCADE,
+        related_name='dental_chart')
+
+    class Meta:
+        verbose_name = 'Зубная карта'
+        verbose_name_plural = 'Зубные карты'
+
+    def __str__(self):
+        return self.client.__str__()
+
+
+class Teeth(models.Model):
+    """Модель Зубы"""
+    dental_chart = models.ForeignKey(
+        to=DentalChart,
+        on_delete=models.CASCADE,
+        related_name='teeth',
+        verbose_name='Зубная карта')
+    tooth_number = models.PositiveSmallIntegerField(verbose_name='Номер зуба', default=0)
+    services = models.ManyToManyField(to=Service, blank=True, related_name='teeth')
+
+    class Meta:
+        verbose_name = 'Зуб'
+        verbose_name_plural = 'Зубы'
