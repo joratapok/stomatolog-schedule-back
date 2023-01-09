@@ -9,18 +9,19 @@ from djoser.views import TokenCreateView, TokenDestroyView
 from employee.models import Profile
 from employee.serializers import ProfileTokenCreateSerializer, ProfileSerializer, ProfileTokenSerializer
 from employee.permissions import IsOwner
+from scheduler.permissions import IsOwnerOrAdministrator
 
 
 class ProfileCreateApiView(generics.CreateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
 
 class ProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all().select_related('user').prefetch_related('clinic')
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
     def delete(self, request, pk):
         profile = Profile.objects.get(pk=pk)
