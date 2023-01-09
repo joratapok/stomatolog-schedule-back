@@ -26,7 +26,7 @@ class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer)
 
     class Meta:
         model = Event
-        fields = ('cabinet', 'date_start', 'date_finish', 'services', 'status', 'color', 'doctor', 'client')
+        fields = ('cabinet', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'doctor', 'client')
 
     def create(self, validated_data):
         services_data = validated_data.pop('services')
@@ -45,7 +45,7 @@ class EventClinicSerializer(ModelSerializer):
     class Meta:
         model = Event
         depth = 1
-        fields = ('id', 'date_start', 'date_finish', 'services', 'status', 'color', 'client', 'doctor')
+        fields = ('id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor')
 
 
 class CabinetSerializer(ModelSerializer):

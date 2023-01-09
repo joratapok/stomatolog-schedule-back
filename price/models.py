@@ -26,7 +26,6 @@ class Service(models.Model):
     price = models.DecimalField(verbose_name='Цена', max_digits=8, decimal_places=2, default=0.00)
     type = models.CharField(max_length=255, choices=TYPE_CHOISES, default='service', verbose_name='Тип услуги')
     code = models.CharField(max_length=63, verbose_name='Код')
-    comment = models.TextField(verbose_name='Комментарий', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Услуга'
