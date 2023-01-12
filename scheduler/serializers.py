@@ -2,11 +2,11 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
-from price.models import Service
 
+from price.models import Teeth, DentalChart
+from price.serializers import TeethListSerializer, TeethCreateSerializer
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from employee.serializers import EventProfileSerializer
-from price.serializers import ServiceSerializer
 
 
 class CustomerSerializer(ModelSerializer):
@@ -15,37 +15,63 @@ class CustomerSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class EventSerializer(ModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
+    services = TeethCreateSerializer(many=True)
+
     class Meta:
         model = Event
         fields = '__all__'
 
+    def create(self, validated_data):
+        teeth_data = validated_data.pop('services')
+        new_event = Event.objects.create(**validated_data)
+
+        for teeth in teeth_data:
+            dental_services = teeth.pop('dental_services')
+            new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **teeth)
+            new_tooth.dental_services.set(dental_services)
+            new_tooth.save()
+
+        return new_event
+
 
 class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
     client = CustomerSerializer()
+    services = TeethCreateSerializer(many=True)
 
     class Meta:
         model = Event
-        fields = ('cabinet', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'doctor', 'client')
+        fields = '__all__'
 
     def create(self, validated_data):
-        services_data = validated_data.pop('services')
+        teeth_data = validated_data.pop('services')
         client_data = validated_data.pop('client')
-        client = Customer.objects.create(**client_data)
 
+        client = Customer.objects.create(**client_data)
+        DentalChart.objects.create(client=client)
         new_event = Event.objects.create(client=client, **validated_data)
-        new_event.services.set(services_data)
-        new_event.save()
+
+        for teeth in teeth_data:
+            dental_services = teeth.pop('dental_services')
+            new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **teeth)
+            new_tooth.dental_services.set(dental_services)
+            new_tooth.save()
+
         return new_event
 
 
 class EventClinicSerializer(ModelSerializer):
     doctor = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+    services = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         depth = 1
         fields = ('id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor')
+
+    def get_services(self, event):
+        queryset = event.services.all()
+        return TeethListSerializer(queryset, many=True).data
 
 
 class CabinetSerializer(ModelSerializer):

@@ -8,7 +8,6 @@ from djoser.views import TokenCreateView, TokenDestroyView
 
 from employee.models import Profile
 from employee.serializers import ProfileTokenCreateSerializer, ProfileSerializer, ProfileTokenSerializer
-from employee.permissions import IsOwner
 from scheduler.permissions import IsOwnerOrAdministrator
 
 

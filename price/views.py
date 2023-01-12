@@ -1,6 +1,5 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.postgres.search import TrigramSimilarity
 from price.models import PriceList, Service
 from price.serializers import PriceListSerializer, ServiceSerializer
 from scheduler.permissions import IsOwnerOrAdministrator
