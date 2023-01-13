@@ -31,3 +31,18 @@ class TeethCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teeth
         fields = ('tooth_number', 'dental_services')
+
+
+class TeethListCustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teeth
+        depth = 1
+        fields = ('tooth_number', 'dental_services', 'event')
+
+
+class DentalChartCustomerSerializer(serializers.ModelSerializer):
+    teeth = TeethListCustomerSerializer(many=True)
+
+    class Meta:
+        model = DentalChart
+        fields = ('id', 'teeth')

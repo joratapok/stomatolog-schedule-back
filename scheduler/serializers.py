@@ -4,12 +4,20 @@ from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
 
 from price.models import Teeth, DentalChart
-from price.serializers import TeethListSerializer, TeethCreateSerializer
+from price.serializers import TeethListSerializer, TeethCreateSerializer, DentalChartCustomerSerializer
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from employee.serializers import EventProfileSerializer
 
 
 class CustomerSerializer(ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+
+class CustomerDetailSerializer(ModelSerializer):
+    dental_chart = DentalChartCustomerSerializer()
+
     class Meta:
         model = Customer
         fields = '__all__'

@@ -4,7 +4,7 @@ from datetime import datetime
 
 from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
-    CustomerSerializer, DutyShiftSerializer
+    CustomerSerializer, CustomerDetailSerializer, DutyShiftSerializer
 from scheduler.permissions import IsOwnerOrAdministrator
 
 TODAY_DATE = datetime.today().date()
@@ -66,7 +66,19 @@ class CustomerListApiView(generics.ListAPIView):
     def get_queryset(self):
         if 'lastName' in self.request.query_params:
             return Customer.objects.filter(last_name__istartswith=self.request.query_params['lastName'])[:10]
-        return Customer.objects.all()[:10]
+        return Customer.objects.all()
+
+
+class CustomerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+
+
+class CustomerDetailRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerDetailSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
 
 class DutyShiftListCreateApiView(generics.ListCreateAPIView):
