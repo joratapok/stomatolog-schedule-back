@@ -56,7 +56,6 @@ class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer)
         client_data = validated_data.pop('client')
 
         client = Customer.objects.create(**client_data)
-        DentalChart.objects.create(client=client)
         new_event = Event.objects.create(client=client, **validated_data)
 
         for teeth in teeth_data:
