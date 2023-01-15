@@ -34,13 +34,27 @@ class EventSerializer(serializers.ModelSerializer):
         teeth_data = validated_data.pop('services')
         new_event = Event.objects.create(**validated_data)
 
-        for teeth in teeth_data:
-            dental_services = teeth.pop('dental_services')
-            new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **teeth)
+        for tooth in teeth_data:
+            dental_services = tooth.pop('dental_services')
+            new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **tooth)
             new_tooth.dental_services.set(dental_services)
             new_tooth.save()
 
         return new_event
+
+    def update(self, instance, validated_data):
+        teeth_data = validated_data.pop('services')
+        instance = super().update(instance, validated_data)
+
+        if teeth_data:
+            for tooth in teeth_data:
+                dental_services = tooth.pop('dental_services')
+
+                tooth_obj = Teeth.objects.filter(event=instance)
+                tooth_obj.update(**tooth)
+                tooth_obj[0].dental_services.set(dental_services)
+
+        return instance
 
 
 class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
@@ -58,9 +72,9 @@ class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer)
         client = Customer.objects.create(**client_data)
         new_event = Event.objects.create(client=client, **validated_data)
 
-        for teeth in teeth_data:
-            dental_services = teeth.pop('dental_services')
-            new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **teeth)
+        for tooth in teeth_data:
+            dental_services = tooth.pop('dental_services')
+            new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **tooth)
             new_tooth.dental_services.set(dental_services)
             new_tooth.save()
 
