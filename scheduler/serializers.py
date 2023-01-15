@@ -24,21 +24,22 @@ class CustomerDetailSerializer(ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    services = TeethCreateSerializer(many=True)
+    services = TeethCreateSerializer(many=True, required=False)
 
     class Meta:
         model = Event
         fields = '__all__'
 
     def create(self, validated_data):
-        teeth_data = validated_data.pop('services')
+        teeth_data = validated_data.pop('services') if 'services' in validated_data else None
         new_event = Event.objects.create(**validated_data)
 
-        for tooth in teeth_data:
-            dental_services = tooth.pop('dental_services')
-            new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **tooth)
-            new_tooth.dental_services.set(dental_services)
-            new_tooth.save()
+        if teeth_data:
+            for tooth in teeth_data:
+                dental_services = tooth.pop('dental_services')
+                new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **tooth)
+                new_tooth.dental_services.set(dental_services)
+                new_tooth.save()
 
         return new_event
 
@@ -64,21 +65,20 @@ class EventSerializer(serializers.ModelSerializer):
 
 class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
     client = CustomerSerializer()
-    services = TeethCreateSerializer(many=True)
+    services = TeethCreateSerializer(many=True, required=False)
 
     class Meta:
         model = Event
         fields = '__all__'
 
     def create(self, validated_data):
-        teeth_data = validated_data.pop('services')
+        teeth_data = validated_data.pop('services') if 'services' in validated_data else None
         client_data = validated_data.pop('client')
 
         client = Customer.objects.create(**client_data)
         new_event = Event.objects.create(client=client, **validated_data)
 
         if teeth_data:
-
             for tooth in teeth_data:
                 dental_services = tooth.pop('dental_services')
                 new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **tooth)
