@@ -49,10 +49,15 @@ class EventSerializer(serializers.ModelSerializer):
         if teeth_data:
             for tooth in teeth_data:
                 dental_services = tooth.pop('dental_services')
+                tooth_obj = Teeth.objects.filter(event=instance, tooth_number=tooth['tooth_number']).exists()
 
-                tooth_obj = Teeth.objects.filter(event=instance)
-                tooth_obj.update(**tooth)
-                tooth_obj[0].dental_services.set(dental_services)
+                if tooth_obj:
+                    tooth_obj = Teeth.objects.filter(event=instance, tooth_number=tooth['tooth_number'])
+                    tooth_obj.update(**tooth)
+                    tooth_obj[0].dental_services.set(dental_services)
+                else:
+                    new_tooth = Teeth.objects.create(event=instance, dental_chart=instance.client.dental_chart, **tooth)
+                    new_tooth.dental_services.set(dental_services)
 
         return instance
 
@@ -72,11 +77,13 @@ class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer)
         client = Customer.objects.create(**client_data)
         new_event = Event.objects.create(client=client, **validated_data)
 
-        for tooth in teeth_data:
-            dental_services = tooth.pop('dental_services')
-            new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **tooth)
-            new_tooth.dental_services.set(dental_services)
-            new_tooth.save()
+        if teeth_data:
+
+            for tooth in teeth_data:
+                dental_services = tooth.pop('dental_services')
+                new_tooth = Teeth.objects.create(event=new_event, dental_chart=new_event.client.dental_chart, **tooth)
+                new_tooth.dental_services.set(dental_services)
+                new_tooth.save()
 
         return new_event
 
