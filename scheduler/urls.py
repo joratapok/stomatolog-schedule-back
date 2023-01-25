@@ -16,4 +16,7 @@ urlpatterns = [
 
     path('duty-shift/', views.DutyShiftListCreateApiView.as_view()),
     path('duty-shift/<int:pk>/', views.DutyShiftRetrieveUpdateDestroyAPIView.as_view()),
+
+    path('pdf/', views.get_invoice_of_payment, name='get_pdf'),
+    # path('pdf/', views.InvoiceOfPaymentPDFView.as_view()),
 ]
