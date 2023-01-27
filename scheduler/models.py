@@ -50,7 +50,7 @@ class Clinic(models.Model):
         ordering = ['-is_main']
 
     def __str__(self):
-        return f'{self.id} {self.title}'
+        return f'{self.title}'
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
@@ -70,7 +70,7 @@ class Cabinet(models.Model):
         unique_together = ('name', 'clinic')
 
     def __str__(self):
-        return f'{self.name} --- {self.pk}'
+        return f'{self.clinic.title} {self.name}'
 
 
 class DutyShift(models.Model):

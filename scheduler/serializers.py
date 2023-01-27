@@ -7,6 +7,7 @@ from price.models import Teeth, DentalChart
 from price.serializers import TeethListSerializer, TeethCreateSerializer, DentalChartCustomerSerializer
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from employee.serializers import EventProfileSerializer
+from scheduler.utils import get_invoice_of_payment
 
 
 class CustomerSerializer(ModelSerializer):

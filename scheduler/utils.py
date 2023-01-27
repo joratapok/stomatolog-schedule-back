@@ -10,13 +10,13 @@ def render_pdf_view(template_html, params: dict):
     pdf_name = 'invoice.pdf'
 
     # ------------- For windows settings ------------
-    # path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-    # config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-    # pdfkit.from_string(html, pdf_name, configuration=config)
+    path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+    pdfkit.from_string(html, pdf_name, configuration=config)
     # ------------ End of windows settings -----------
 
     # ------------- For docker settings ------------
-    pdfkit.from_string(html, pdf_name)
+    # pdfkit.from_string(html, pdf_name)
     # ------------ End of docker settings -----------
     pdf = open(pdf_name, 'rb')
     response = HttpResponse(pdf.read(), content_type='application/pdf')
@@ -24,3 +24,13 @@ def render_pdf_view(template_html, params: dict):
     pdf.close()
     os.remove(pdf_name)
     return response
+
+
+def get_invoice_of_payment(event):
+    context = {
+        'event': event,
+        'clinic': event.doctor.clinic.all()[0].title,
+        'services': event.services.all(),
+    }
+    pdf_template = 'scheduler/pdf.html'
+    return render_pdf_view(pdf_template, context)
