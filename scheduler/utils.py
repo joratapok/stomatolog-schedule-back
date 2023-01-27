@@ -24,13 +24,3 @@ def render_pdf_view(template_html, params: dict):
     pdf.close()
     os.remove(pdf_name)
     return response
-
-
-def get_invoice_of_payment(event):
-    context = {
-        'event': event,
-        'clinic': event.doctor.clinic.all()[0].title,
-        'services': event.services.all(),
-    }
-    pdf_template = 'scheduler/pdf.html'
-    return render_pdf_view(pdf_template, context)

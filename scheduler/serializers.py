@@ -3,11 +3,10 @@ from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
 
-from price.models import Teeth, DentalChart
+from price.models import Teeth
 from price.serializers import TeethListSerializer, TeethCreateSerializer, DentalChartCustomerSerializer
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
 from employee.serializers import EventProfileSerializer
-from scheduler.utils import get_invoice_of_payment
 
 
 class CustomerSerializer(ModelSerializer):

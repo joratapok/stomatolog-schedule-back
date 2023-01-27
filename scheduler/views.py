@@ -1,6 +1,8 @@
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
 from rest_framework.decorators import api_view
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 from django.shortcuts import redirect
@@ -10,7 +12,7 @@ from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
     CustomerSerializer, CustomerDetailSerializer, DutyShiftSerializer
 from scheduler.permissions import IsOwnerOrAdministrator
-from scheduler.utils import render_pdf_view, get_invoice_of_payment
+from scheduler.utils import render_pdf_view
 
 TODAY_DATE = datetime.today().date()
 
@@ -96,3 +98,15 @@ class DutyShiftRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIVie
     queryset = DutyShift.objects.all()
     serializer_class = DutyShiftSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+
+
+@api_view(['GET'])
+def get_invoice_of_payment(request, pk):
+    event = Event.objects.get(pk=pk)
+    context = {
+        'event': event,
+        'clinic': event.doctor.clinic.all()[0].title,
+        'services': event.services.all(),
+    }
+    pdf_template = 'scheduler/pdf.html'
+    return render_pdf_view(pdf_template, context)
