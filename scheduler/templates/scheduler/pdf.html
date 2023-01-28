@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+{#    <meta charset="UTF-8">#}
+    <title>Title</title>
+    <style type="text/css">
+        @font-face {
+      font-family: Times New Roman;
+      src: url({% static "fonts/TimesNewRoman.ttf" %});
+    }
+    body {
+        font-family: Times New Roman;
+    }
+    </style>
+</head>
+<body>
+    <h2>Счет-квитанция</h2>
+    <h3>по оказанным услугам за {{ event.date_start }}</h3>
+
+    <h3>ФИО пациента: {{ event.client.last_name }} {{ event.client.first_name }} {{ event.client.middle_name }}</h3>
+    <h3>ФИО лечащего врача: {{ event.doctor.user.last_name }} {{ event.doctor.user.first_name }} {{ event.doctor.middle_name }}</h3>
+
+    <table class="table">
+      <tr>
+        <th>Наименование услуги</th>
+        <th>Зубы</th>
+        <th>Цена</th>
+        <th>Количество</th>
+        <th>Сумма</th>
+      </tr>
+        {% for service in services %}
+            {% for dent_serv in service.dental_services.all %}
+              <tr>
+                <td>{{ dent_serv.title }}</td>
+                <td>{{ service.tooth_number }}</td>
+                <td>{{ dent_serv.price }}</td>
+              </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+
+</body>
+</html>
