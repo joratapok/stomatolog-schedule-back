@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator
 from django.db import models
 
 
@@ -55,7 +56,8 @@ class Teeth(models.Model):
         on_delete=models.CASCADE,
         related_name='teeth',
         verbose_name='Зубная карта')
-    tooth_number = models.PositiveSmallIntegerField(verbose_name='Номер зуба', default=0)
+    tooth_number = models.PositiveSmallIntegerField(
+        verbose_name='Номер зуба', default=0, validators=[MaxValueValidator(31)])
     dental_services = models.ManyToManyField(to=Service, blank=True, related_name='teeth', verbose_name='Услуги')
     event = models.ForeignKey(to='scheduler.Event', on_delete=models.SET_NULL, verbose_name='Событие', blank=True, null=True, related_name='services')
 
