@@ -135,6 +135,7 @@ class CabinetClinicSerializer(ModelSerializer):
 class ClinicSerializer(ModelSerializer):
     cabinets = serializers.SerializerMethodField(read_only=True)
     doctors = serializers.SerializerMethodField(read_only=True)
+    administrators = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Clinic
@@ -148,6 +149,7 @@ class ClinicSerializer(ModelSerializer):
                   'start_of_the_day',
                   'end_of_the_day',
                   'doctors',
+                  'administrators',
                   'price_list'
                   )
 
@@ -163,4 +165,9 @@ class ClinicSerializer(ModelSerializer):
     def get_doctors(self, obj):
         clinic = obj
         queryset = clinic.profiles.filter(role='doctor')
+        return EventProfileSerializer(queryset, many=True).data
+
+    def get_administrators(self, obj):
+        clinic = obj
+        queryset = clinic.profiles.filter(role='administrator')
         return EventProfileSerializer(queryset, many=True).data
