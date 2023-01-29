@@ -12,7 +12,7 @@ def render_pdf_view(template_html, params: dict):
     # ------------- For windows settings ------------
     path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
     config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-    pdfkit.from_string(html, pdf_name, configuration=config)
+    pdfkit.from_string(html, pdf_name, configuration=config, options={"enable-local-file-access": True})
     # ------------ End of windows settings -----------
 
     # ------------- For docker settings ------------
