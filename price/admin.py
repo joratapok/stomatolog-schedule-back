@@ -10,10 +10,18 @@ class ServiceResource(resources.ModelResource):
 
 
 class ServiceAdmin(ImportExportModelAdmin):
+    list_display = ('price_list', 'title', 'price', 'type', 'code', )
+    list_filter = ('price_list', 'type', )
+    search_fields = ('title', 'price', 'code', )
     resource_class = ServiceResource
+
+
+class TeethAdmin(admin.ModelAdmin):
+    list_display = ('dental_chart', 'tooth_number', 'count', 'event', )
+    list_editable = ('tooth_number', 'count', )
 
 
 admin.site.register(PriceList)
 admin.site.register(Service, ServiceAdmin)
 admin.site.register(DentalChart)
-admin.site.register(Teeth)
+admin.site.register(Teeth, TeethAdmin)
