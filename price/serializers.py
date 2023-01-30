@@ -24,20 +24,20 @@ class TeethListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teeth
         depth = 1
-        fields = ('tooth_number', 'dental_services')
+        fields = ('tooth_number', 'dental_services', 'count')
 
 
 class TeethCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teeth
-        fields = ('tooth_number', 'dental_services')
+        fields = ('tooth_number', 'dental_services', 'count')
 
 
 class TeethListCustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teeth
         depth = 1
-        fields = ('tooth_number', 'dental_services', 'event')
+        fields = ('tooth_number', 'dental_services', 'count', 'event')
 
 
 class DentalChartCustomerSerializer(serializers.ModelSerializer):

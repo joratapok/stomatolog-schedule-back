@@ -103,10 +103,15 @@ class DutyShiftRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIVie
 @api_view(['GET'])
 def get_invoice_of_payment(request, pk):
     event = Event.objects.get(pk=pk)
+    total_sum = 0
+    for service in event.services.all():
+        for dent_serv in service.dental_services.all():
+            total_sum += dent_serv.price * service.count
     context = {
         'event': event,
         'clinic': event.doctor.clinic.all()[0].title,
         'services': event.services.all(),
+        'total_sum': total_sum
     }
     pdf_template = 'scheduler/pdf.html'
     return render_pdf_view(pdf_template, context)

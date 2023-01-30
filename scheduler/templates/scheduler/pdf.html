@@ -135,15 +135,19 @@
                 <td>{{ dent_serv.title }}</td>
                 <td>{{ service.tooth_number }}</td>
                 <td>{{ dent_serv.price }}</td>
-                <td>1</td>
-                <td>{{ dent_serv.price}}</td>
+                <td>{{ service.count }}</td>
+                <script>
+                    var sum
+                    sum = Number({{ dent_serv.price }}) * {{ service.count }};
+                    document.write("<td>" + sum + "<\/td>");
+                </script>
               </tr>
           {% endfor %}
       {% endfor %}
 
       <tr>
         <th colspan="5">Итоговая стоимость оказанных услуг</th>
-        <th>6900,00 ₽</th>
+        <th>{{ total_sum }} ₽</th>
       </tr>
     </table>
 
@@ -151,11 +155,11 @@
       <table class="resultTable">
         <tr>
           <th>Итоговая стоимость со скидкой</th>
-          <td class="priceWidth">6900,00 ₽</td>
+          <td class="priceWidth">{{ total_sum }} ₽</td>
         </tr>
         <tr>
           <th>Итого к оплате</th>
-          <th class="priceWidth">6900,00 ₽</th>
+          <th class="priceWidth">{{ total_sum }} ₽</th>
         </tr>
       </table>
     </div>
