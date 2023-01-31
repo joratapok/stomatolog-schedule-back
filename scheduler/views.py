@@ -1,12 +1,7 @@
-from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
 from rest_framework.decorators import api_view
-from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
-from django.shortcuts import redirect
-from rest_framework.utils import json
 
 from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
@@ -17,8 +12,8 @@ from scheduler.utils import render_pdf_view
 TODAY_DATE = datetime.today().date()
 
 
-class EventListApiView(generics.ListAPIView):
-    queryset = Clinic.objects.prefetch_related('cabinets', 'cabinets__duty_shift_cabinet')
+class ClinicListApiView(generics.ListAPIView):
+    queryset = Clinic.objects.all().prefetch_related('cabinets')
     serializer_class = ClinicSerializer
     permission_classes = [IsAuthenticated]
 
@@ -49,7 +44,7 @@ class EventCreateApiView(generics.CreateAPIView):
 
 
 class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Event.objects.all()
+    queryset = Event.objects.all().prefetch_related('services__dental_services__teeth')
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 

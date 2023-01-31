@@ -70,7 +70,7 @@ class Cabinet(models.Model):
         unique_together = ('name', 'clinic')
 
     def __str__(self):
-        return f'{self.clinic.title} {self.name}'
+        return f'{self.name}'
 
 
 class DutyShift(models.Model):

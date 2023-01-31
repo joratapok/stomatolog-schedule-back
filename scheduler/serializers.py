@@ -3,6 +3,7 @@ from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
 
+from employee.models import Profile
 from price.models import Teeth
 from price.serializers import TeethListSerializer, TeethCreateSerializer, DentalChartCustomerSerializer
 from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
@@ -164,7 +165,8 @@ class ClinicSerializer(ModelSerializer):
 
     def get_doctors(self, obj):
         clinic = obj
-        queryset = clinic.profiles.filter(role='doctor')
+        # queryset = clinic.profiles.filter(role='doctor')
+        queryset = Profile.objects.filter(clinic=clinic, role='doctor')
         return EventProfileSerializer(queryset, many=True).data
 
     def get_administrators(self, obj):
