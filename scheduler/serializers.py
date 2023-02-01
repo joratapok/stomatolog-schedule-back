@@ -163,13 +163,16 @@ class ClinicSerializer(ModelSerializer):
         return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date'],
                                                                      'profile': self.context['profile']}).data
 
-    def get_doctors(self, obj):
-        clinic = obj
-        # queryset = clinic.profiles.filter(role='doctor')
-        queryset = Profile.objects.filter(clinic=clinic, role='doctor')
+    def get_doctors(self, clinic):
+        queryset = Profile.objects.all().select_related('user').prefetch_related('clinic').filter(
+            role='doctor',
+            clinic=clinic
+        )
         return EventProfileSerializer(queryset, many=True).data
 
-    def get_administrators(self, obj):
-        clinic = obj
-        queryset = clinic.profiles.filter(role='administrator')
+    def get_administrators(self, clinic):
+        queryset = Profile.objects.all().select_related('user').prefetch_related('clinic').filter(
+            role='administrator',
+            clinic=clinic
+        )
         return EventProfileSerializer(queryset, many=True).data
