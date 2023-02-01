@@ -23,6 +23,8 @@
         }
         .container {
             padding: 0 24px;
+            display: flex;
+            justify-content: flex-end;
         }
         .header {
             margin-top: 2rem;
@@ -78,12 +80,12 @@
             width: 200px;
         }
         .resultContainer {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
+            width: 55%;
+            display: inline-block;
+            float: right;
         }
         .resultTable {
-            width: 50%;
+            width: 100%;
         }
     </style>
   <title>Счет-квитанция</title>
@@ -135,10 +137,10 @@
                 <td>{{ dent_serv.title }}</td>
                 <td>{{ service.tooth_number }}</td>
                 <td>{{ dent_serv.price }}</td>
-                <td>{{ service.count }}</td>
+                <td>{{ dent_serv.count }}</td>
                 <script>
                     var sum
-                    sum = Number({{ dent_serv.price }}) * {{ service.count }};
+                    sum = Number({{ dent_serv.price }}) * {{ dent_serv.count }};
                     document.write("<td>" + sum + "<\/td>");
                 </script>
               </tr>
