@@ -137,10 +137,10 @@
                 <td>{{ dent_serv.title }}</td>
                 <td>{{ service.tooth_number }}</td>
                 <td>{{ dent_serv.price }}</td>
-                <td>{{ dent_serv.count }}</td>
+                <td>{{ service.count }}</td>
                 <script>
                     var sum
-                    sum = Number({{ dent_serv.price }}) * {{ dent_serv.count }};
+                    sum = Number({{ dent_serv.price }}) * {{ service.count }};
                     document.write("<td>" + sum + "<\/td>");
                 </script>
               </tr>
