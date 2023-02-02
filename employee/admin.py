@@ -11,12 +11,22 @@ class ProfileInline(admin.StackedInline):
 
 
 class UserProfileAdmin(UserAdmin):
-    list_display = ('last_name', 'first_name', 'middle_name', 'role', 'date_of_birth', 'phone', 'speciality', )
+    list_display = (
+        'last_name',
+        'first_name',
+        'middle_name',
+        'role',
+        'date_of_birth',
+        'phone',
+        'speciality',
+        'is_active'
+    )
+    list_filter = ('profile__role', 'is_active', 'is_superuser', )
     inlines = [ProfileInline]
     fieldsets = (
         (None, {'fields': ['username', 'password', ]}),
         (_('Personal info'), {'fields': ('first_name', 'last_name',)}),
-        (_('Permissions'), {'fields': ('is_superuser',)}),
+        (_('Permissions'), {'fields': ('is_superuser', 'is_active')}),
     )
     add_fieldsets = (
         (

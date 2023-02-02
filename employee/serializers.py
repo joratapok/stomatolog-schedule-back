@@ -13,6 +13,7 @@ class ProfileSerializer(ModelSerializer):
     password = serializers.CharField(source='user.password')
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
+    is_active = serializers.BooleanField(source='user.is_active')
     date_of_birth = serializers.DateField()
 
     class Meta:
@@ -29,7 +30,8 @@ class ProfileSerializer(ModelSerializer):
             'phone',
             'image',
             'speciality',
-            'clinic'
+            'clinic',
+            'is_active',
         )
 
     def create(self, validated_data):
@@ -81,7 +83,8 @@ class ProfileTokenSerializer(ProfileSerializer):
             'image',
             'speciality',
             'clinic',
-            'token'
+            'is_active',
+            'token',
         )
 
 
