@@ -22,6 +22,7 @@ class UserProfileAdmin(UserAdmin):
         'is_active'
     )
     list_filter = ('profile__role', 'is_active', 'is_superuser', )
+    list_editable = ('is_active', )
     inlines = [ProfileInline]
     fieldsets = (
         (None, {'fields': ['username', 'password', ]}),
