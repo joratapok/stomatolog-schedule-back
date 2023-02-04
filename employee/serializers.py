@@ -52,8 +52,9 @@ class ProfileSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
-        if validated_data['image'] is None:
-            validated_data['image'] = instance.image
+        if not self._kwargs['partial']:
+            if validated_data['image'] is None:
+                validated_data['image'] = instance.image
         instance = super().update(instance, validated_data)
 
         if user_data:
