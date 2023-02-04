@@ -27,9 +27,19 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('doctor', 'client', 'cabinet', 'date_start', 'date_finish', 'status', 'color', 'comment', )
-    list_filter = ('cabinet', 'status', )
+    list_display = ('doctor', 'client', 'clinic', 'cabinet', 'date_start', 'date_finish', 'status', 'color', 'comment', )
+    list_filter = ('cabinet__clinic__title', 'status', )
     list_editable = ('status', )
+    search_fields = ('date_start', )
+
+    def clinic(self, obj):
+        try:
+            clinic = Clinic.objects.get(cabinets__name=obj.cabinet.name).title
+            return clinic
+        except:
+            return ''
+
+    clinic.short_description = 'Клиника'
 
 
 admin.site.register(Clinic, ClinicAdmin)
