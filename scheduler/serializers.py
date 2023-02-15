@@ -92,7 +92,7 @@ class EventClinicSerializer(ModelSerializer):
     class Meta:
         model = Event
         depth = 1
-        fields = ('id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor')
+        fields = ('id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor', 'invoice')
 
     # def get_services(self, event):
     #     queryset = event.services.all()

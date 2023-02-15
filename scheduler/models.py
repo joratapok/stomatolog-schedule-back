@@ -128,6 +128,8 @@ class Event(models.Model):
                                related_name='doctor_events',
                                verbose_name='Лечащий врач')
 
+    invoice = models.FileField(upload_to=f'Invoices/%Y/%m/%d/', blank=True, null=True)
+
     class Meta:
         verbose_name = 'Событие'
         verbose_name_plural = 'События'
