@@ -109,4 +109,4 @@ def get_invoice_of_payment(request, pk):
         'total_sum': total_sum
     }
     pdf_template = 'scheduler/pdf.html'
-    return render_pdf_view(pdf_template, context)
+    return render_pdf_view(pdf_template, context, event)

@@ -4,7 +4,7 @@ import pdfkit
 import os
 
 
-def render_pdf_view(template_html, params: dict):
+def render_pdf_view(template_html, params: dict, event):
     template = get_template(template_html)
     html = template.render(params)
     pdf_name = 'invoice.pdf'
@@ -18,10 +18,11 @@ def render_pdf_view(template_html, params: dict):
     # ------------- For docker settings ------------
     # pdfkit.from_string(html, pdf_name)
     # ------------ End of docker settings -----------
+
+    event.invoice.save('invoice.pdf', open(pdf_name, 'rb'))
     pdf = open(pdf_name, 'rb')
     response = HttpResponse(pdf.read(), content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={pdf_name}'
     pdf.close()
     os.remove(pdf_name)
     return response
-
