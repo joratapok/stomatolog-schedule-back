@@ -57,7 +57,7 @@ class Teeth(models.Model):
         related_name='teeth',
         verbose_name='Зубная карта')
     tooth_number = models.PositiveSmallIntegerField(
-        verbose_name='Номер зуба', default=0, validators=[MaxValueValidator(31)])
+        verbose_name='Номер зуба', default=0, validators=[MaxValueValidator(63)])
     dental_services = models.ManyToManyField(to=Service, blank=True, related_name='teeth', verbose_name='Услуги')
     count = models.PositiveSmallIntegerField(verbose_name='Количество', default=1)
     event = models.ForeignKey(to='scheduler.Event', on_delete=models.SET_NULL, verbose_name='Событие', blank=True, null=True, related_name='services')
