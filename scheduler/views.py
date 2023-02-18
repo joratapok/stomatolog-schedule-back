@@ -106,7 +106,8 @@ def get_invoice_of_payment(request, pk):
         'event': event,
         'clinic': event.doctor.clinic.all()[0].title,
         'services': event.services.all(),
-        'total_sum': total_sum
+        'total_sum': total_sum,
+        'total_sum_with_discount': int(total_sum) - (int(total_sum) * (event.client.discount / 100.0))
     }
     pdf_template = 'scheduler/pdf.html'
     return render_pdf_view(pdf_template, context, event)
