@@ -11,6 +11,8 @@ from employee.serializers import EventProfileSerializer
 
 
 class CustomerSerializer(ModelSerializer):
+    date_of_birth = serializers.DateField()
+
     class Meta:
         model = Customer
         fields = '__all__'
