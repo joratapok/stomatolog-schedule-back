@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from scheduler.models import Customer
+from scheduler.models import Customer, TreatmentPlan
 from price.models import DentalChart
 
 
@@ -8,3 +8,9 @@ from price.models import DentalChart
 def create_customer_dental_chart(sender, instance, created, **kwargs):
     if created:
         DentalChart.objects.create(client=instance)
+
+
+@receiver(post_save, sender=Customer)
+def create_customer_treatment_plan(sender, instance, created, **kwargs):
+    if created:
+        TreatmentPlan.objects.create(customer=instance)

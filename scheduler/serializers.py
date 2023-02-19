@@ -6,12 +6,19 @@ from drf_writable_nested.mixins import UniqueFieldsMixin
 from employee.models import Profile
 from price.models import Teeth
 from price.serializers import TeethListSerializer, TeethCreateSerializer, DentalChartCustomerSerializer
-from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift
+from scheduler.models import Clinic, Cabinet, Event, Customer, DutyShift, TreatmentPlan
 from employee.serializers import EventProfileSerializer
+
+
+class TreatmentPlanSerializer(ModelSerializer):
+    class Meta:
+        model = TreatmentPlan
+        fields = ('tooth', 'plan')
 
 
 class CustomerSerializer(ModelSerializer):
     date_of_birth = serializers.DateField()
+    treatment_plan = TreatmentPlanSerializer(many=True)
 
     class Meta:
         model = Customer
@@ -20,6 +27,7 @@ class CustomerSerializer(ModelSerializer):
 
 class CustomerDetailSerializer(ModelSerializer):
     dental_chart = DentalChartCustomerSerializer()
+    treatment_plan = TreatmentPlanSerializer(many=True)
 
     class Meta:
         model = Customer

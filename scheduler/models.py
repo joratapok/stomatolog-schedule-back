@@ -30,6 +30,21 @@ class Customer(models.Model):
         return f'{self.last_name} {self.first_name}'
 
 
+class TreatmentPlan(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='Клиент', related_name='treatment_plan')
+    tooth = models.PositiveSmallIntegerField(
+        verbose_name='Номер зуба', validators=[MaxValueValidator(63)], blank=True, null=True
+    )
+    plan = models.CharField(max_length=255, verbose_name='План', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'План лечения'
+        verbose_name_plural = 'Планы лечения'
+
+    def __str__(self):
+        return f'Клиент {self.customer}'
+
+
 class Clinic(models.Model):
     title = models.CharField(max_length=255, verbose_name='Наименование', unique=True)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL", blank=True)

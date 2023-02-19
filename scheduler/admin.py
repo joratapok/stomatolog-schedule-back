@@ -1,5 +1,5 @@
 from django.contrib import admin
-from scheduler.models import Customer, Clinic, Cabinet, Event, DutyShift
+from scheduler.models import Customer, Clinic, Cabinet, Event, DutyShift, TreatmentPlan
 
 
 class ClinicAdmin(admin.ModelAdmin):
@@ -18,6 +18,10 @@ class DutyShiftAdmin(admin.ModelAdmin):
     list_display = ('doctor', 'cabinet', 'date_start', 'date_finish', )
     list_filter = ('doctor', 'cabinet', 'date_start', )
     list_editable = ('cabinet', )
+
+
+class TreatmentPlanAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer', 'tooth', 'plan')
 
 
 class CustomerAdmin(admin.ModelAdmin):
@@ -43,6 +47,7 @@ class EventAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Clinic, ClinicAdmin)
+admin.site.register(TreatmentPlan, TreatmentPlanAdmin)
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Cabinet, CabinetAdmin)
 admin.site.register(Event, EventAdmin)
