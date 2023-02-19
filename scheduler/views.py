@@ -68,7 +68,7 @@ class CustomerListApiView(generics.ListAPIView):
     def get_queryset(self):
         if 'lastName' in self.request.query_params:
             return Customer.objects.filter(last_name__istartswith=self.request.query_params['lastName'])[:10]
-        return Customer.objects.all()
+        return Customer.objects.all()[:10]
 
 
 class CustomerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
