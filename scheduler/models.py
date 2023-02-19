@@ -17,7 +17,7 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=255, verbose_name='Имя')
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
-    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True, auto_now=True)
+    date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True, auto_now_add=True)
     gender = models.CharField(max_length=255, choices=GENDER, default='male', verbose_name='Пол')
     phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True, default='8-999-888-77-66')
     discount = models.PositiveSmallIntegerField(verbose_name='Скидка', default=0, validators=[MaxValueValidator(100)])
