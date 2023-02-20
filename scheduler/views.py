@@ -61,7 +61,7 @@ class CabinetRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
 
-class CustomerListApiView(generics.ListAPIView):
+class CustomerListCreateApiView(generics.ListCreateAPIView):
     serializer_class = CustomerSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
@@ -107,7 +107,7 @@ def get_invoice_of_payment(request, pk):
         'clinic': event.doctor.clinic.all()[0].title,
         'services': event.services.all(),
         'total_sum': total_sum,
-        'total_sum_with_discount': int(total_sum) - (int(total_sum) * (event.client.discount / 100.0))
+        'total_sum_with_discount': int(total_sum) * (1.0 - event.client.discount / 100.0)
     }
     pdf_template = 'scheduler/pdf.html'
     return render_pdf_view(pdf_template, context, event)

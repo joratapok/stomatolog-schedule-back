@@ -18,11 +18,30 @@ class TreatmentPlanSerializer(ModelSerializer):
 
 class CustomerSerializer(ModelSerializer):
     date_of_birth = serializers.DateField()
-    treatment_plan = TreatmentPlanSerializer(many=True)
+    treatment_plan = TreatmentPlanSerializer(many=True, required=False)
 
     class Meta:
         model = Customer
         fields = '__all__'
+
+    def create(self, validated_data):
+        treatment_plan_data = validated_data.pop('treatment_plan') if 'treatment_plan' in validated_data else None
+        customer = Customer.objects.create(**validated_data)
+
+        if treatment_plan_data:
+            for treatment_plan in treatment_plan_data:
+                TreatmentPlan.objects.create(customer=customer, **treatment_plan)
+        return customer
+
+    def update(self, instance, validated_data):
+        treatment_plan_data = validated_data.pop('treatment_plan') if 'treatment_plan' in validated_data else None
+        if treatment_plan_data:
+            TreatmentPlan.objects.filter(customer=instance).delete()
+
+            for treatment_plan in treatment_plan_data:
+                TreatmentPlan.objects.create(customer=instance, **treatment_plan)
+        instance = super().update(instance, validated_data)
+        return instance
 
 
 class CustomerDetailSerializer(ModelSerializer):

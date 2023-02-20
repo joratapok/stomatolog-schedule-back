@@ -11,7 +11,7 @@ urlpatterns = [
     path('cabinet/create/', views.CabinetCreateApiView.as_view()),
     path('cabinet/<int:pk>/', views.CabinetRetrieveUpdateDestroyAPIView.as_view()),
 
-    path('customer/', views.CustomerListApiView.as_view()),
+    path('customer/', views.CustomerListCreateApiView.as_view()),
     path('customer/<int:pk>/', views.CustomerRetrieveUpdateDestroyAPIView.as_view()),
     path('customer/<int:pk>/detail/', views.CustomerDetailRetrieveAPIView.as_view()),
 

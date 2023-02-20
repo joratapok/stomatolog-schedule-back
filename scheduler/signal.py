@@ -8,9 +8,3 @@ from price.models import DentalChart
 def create_customer_dental_chart(sender, instance, created, **kwargs):
     if created:
         DentalChart.objects.create(client=instance)
-
-
-@receiver(post_save, sender=Customer)
-def create_customer_treatment_plan(sender, instance, created, **kwargs):
-    if created:
-        TreatmentPlan.objects.create(customer=instance)
