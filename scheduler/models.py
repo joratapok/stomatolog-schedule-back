@@ -15,7 +15,7 @@ class Customer(models.Model):
     )
 
     first_name = models.CharField(max_length=255, verbose_name='Имя')
-    last_name = models.CharField(max_length=255, verbose_name='Фамилия')
+    last_name = models.CharField(max_length=255, verbose_name='Фамилия', db_index=True)
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
     date_of_birth = models.DateField(verbose_name='Дата рождения', db_index=True, auto_now_add=True)
     gender = models.CharField(max_length=255, choices=GENDER, default='male', verbose_name='Пол')
@@ -127,7 +127,7 @@ class Event(models.Model):
                                 related_name='cabinet_events',
                                 verbose_name='Кабинет')
 
-    date_start = models.DateTimeField(verbose_name='Дата и время начала приема')
+    date_start = models.DateTimeField(verbose_name='Дата и время начала приема', db_index=True)
     date_finish = models.DateTimeField(verbose_name='Дата и время окончания приема')
     status = models.CharField(max_length=255, choices=STATUS, default='not_confirmed')
     color = models.CharField(max_length=255, verbose_name='Цвет', null=True, blank=True)
