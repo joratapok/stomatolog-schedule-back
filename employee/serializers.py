@@ -32,6 +32,7 @@ class ProfileSerializer(ModelSerializer):
             'speciality',
             'clinic',
             'is_active',
+            'color',
         )
 
     def create(self, validated_data):
@@ -85,6 +86,7 @@ class ProfileTokenSerializer(ProfileSerializer):
             'speciality',
             'clinic',
             'is_active',
+            'color',
             'token',
         )
 
