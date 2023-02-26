@@ -80,6 +80,7 @@ class Cabinet(models.Model):
                                on_delete=models.CASCADE,
                                related_name='cabinets',
                                verbose_name='Клиника')
+    is_active = models.BooleanField(default=True, verbose_name='Активен')
 
     class Meta:
         verbose_name = 'Кабинет'

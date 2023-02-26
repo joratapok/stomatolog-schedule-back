@@ -131,7 +131,7 @@ class EventClinicSerializer(ModelSerializer):
 class CabinetSerializer(ModelSerializer):
     class Meta:
         model = Cabinet
-        fields = ('clinic', 'name')
+        fields = ('clinic', 'name', 'is_active')
 
 
 class DutyShiftSerializer(ModelSerializer):
@@ -146,7 +146,7 @@ class CabinetClinicSerializer(ModelSerializer):
 
     class Meta:
         model = Cabinet
-        fields = ('id', 'name', 'cabinet_events', 'duty_shift')
+        fields = ('id', 'name', 'is_active', 'cabinet_events', 'duty_shift')
 
     def get_cabinet_events(self, obj):
         cabinet = obj
