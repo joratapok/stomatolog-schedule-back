@@ -10,8 +10,9 @@ class ClinicAdmin(admin.ModelAdmin):
 
 
 class CabinetAdmin(admin.ModelAdmin):
-    list_display = ('name', 'clinic', )
-    list_filter = ('clinic', )
+    list_display = ('name', 'clinic', 'is_active')
+    list_filter = ('clinic', 'is_active')
+    list_editable = ('is_active', )
 
 
 class DutyShiftAdmin(admin.ModelAdmin):
