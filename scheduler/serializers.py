@@ -2,6 +2,8 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
+from timezone_field import TimeZoneField
+from timezone_field.rest_framework import TimeZoneSerializerField
 
 from employee.models import Profile
 from price.models import Teeth
@@ -14,6 +16,13 @@ class TreatmentPlanSerializer(ModelSerializer):
     class Meta:
         model = TreatmentPlan
         fields = ('tooth', 'plan')
+
+
+class OnlyClinicSerializer(ModelSerializer):
+
+    class Meta:
+        model = Clinic
+        exclude = ('time_zone', )
 
 
 class CustomerSerializer(ModelSerializer):
@@ -88,7 +97,7 @@ class EventSerializer(serializers.ModelSerializer):
         return instance
 
 
-class EventCustomerSerializer(UniqueFieldsMixin,  WritableNestedModelSerializer):
+class EventCustomerSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
     client = CustomerSerializer()
     services = TeethCreateSerializer(many=True, required=False)
 
@@ -121,7 +130,8 @@ class EventClinicSerializer(ModelSerializer):
     class Meta:
         model = Event
         depth = 1
-        fields = ('id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor', 'invoice')
+        fields = (
+        'id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor', 'invoice')
 
     # def get_services(self, event):
     #     queryset = event.services.all()

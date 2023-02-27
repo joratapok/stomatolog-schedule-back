@@ -5,14 +5,14 @@ from datetime import datetime
 
 from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
-    CustomerSerializer, CustomerDetailSerializer, DutyShiftSerializer
+    CustomerSerializer, CustomerDetailSerializer, DutyShiftSerializer, OnlyClinicSerializer
 from scheduler.permissions import IsOwnerOrAdministrator
 from scheduler.utils import render_pdf_view
 
 TODAY_DATE = datetime.today().date()
 
 
-class ClinicListApiView(generics.ListAPIView):
+class ClinicEventListApiView(generics.ListAPIView):
     queryset = Clinic.objects.all().prefetch_related('cabinets')
     serializer_class = ClinicSerializer
     permission_classes = [IsAuthenticated]
@@ -46,6 +46,18 @@ class EventCreateApiView(generics.CreateAPIView):
 class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all().prefetch_related('services__dental_services__teeth')
     serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+
+
+class ClinicListCreateApiView(generics.ListCreateAPIView):
+    queryset = Clinic.objects.all()
+    serializer_class = OnlyClinicSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+
+
+class ClinicRetrieveUpdateDestroyApiView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Clinic.objects.all()
+    serializer_class = OnlyClinicSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
 
