@@ -21,6 +21,7 @@ class Customer(models.Model):
     gender = models.CharField(max_length=255, choices=GENDER, default='male', verbose_name='Пол')
     phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True, default='8-999-888-77-66')
     discount = models.PositiveSmallIntegerField(verbose_name='Скидка', default=0, validators=[MaxValueValidator(100)])
+    clinic = models.ForeignKey('Clinic', on_delete=models.SET_NULL, verbose_name='Клиника', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Клиент'

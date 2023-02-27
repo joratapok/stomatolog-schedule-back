@@ -26,9 +26,10 @@ class TreatmentPlanAdmin(admin.ModelAdmin):
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('last_name', 'first_name', 'middle_name', 'date_of_birth', 'gender', 'phone')
-    list_filter = ('gender', )
+    list_display = ('last_name', 'first_name', 'middle_name', 'date_of_birth', 'gender', 'phone', 'clinic', )
+    list_filter = ('gender', 'clinic', )
     search_fields = ('last_name', 'first_name', 'phone', )
+    list_editable = ('clinic', )
 
 
 class EventAdmin(admin.ModelAdmin):
