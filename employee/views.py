@@ -43,7 +43,7 @@ class ProfileRetrieveAPIView(generics.RetrieveAPIView):
 
 class ProfileTokenCreateView(TokenCreateView):
     """
-        Переопределение сериализатора класса TokenCreateView
+        Переопределение serializer класса TokenCreateView
     """
     serializer_class = ProfileTokenCreateSerializer
 

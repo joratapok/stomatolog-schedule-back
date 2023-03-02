@@ -1,4 +1,4 @@
-from django.urls import path, include, re_path
+from django.urls import path
 from employee import views
 
 urlpatterns = [
@@ -9,4 +9,3 @@ urlpatterns = [
     path('login/', views.ProfileTokenCreateView.as_view()),
     path('logout/', views.ProfileTokenDestroyView.as_view()),
 ]
-

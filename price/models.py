@@ -17,15 +17,17 @@ class PriceList(models.Model):
 
 class Service(models.Model):
     """Модель Услуга"""
-    TYPE_CHOISES = (
+    TYPE_CHOICES = (
         ('service', 'Услуга'),
         ('product', 'Товар'),
     )
 
-    price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE, related_name='price_services', verbose_name='Прайс-лист')
+    price_list = models.ForeignKey(
+        PriceList, on_delete=models.CASCADE, related_name='price_services', verbose_name='Прайс-лист'
+    )
     title = models.CharField(max_length=255, verbose_name='Наименование')
     price = models.DecimalField(verbose_name='Цена', max_digits=8, decimal_places=2, default=0.00)
-    type = models.CharField(max_length=255, choices=TYPE_CHOISES, default='service', verbose_name='Тип услуги')
+    type = models.CharField(max_length=255, choices=TYPE_CHOICES, default='service', verbose_name='Тип услуги')
     code = models.CharField(max_length=63, verbose_name='Код')
 
     class Meta:
@@ -60,7 +62,14 @@ class Teeth(models.Model):
         verbose_name='Номер зуба', default=0, validators=[MaxValueValidator(63)])
     dental_services = models.ManyToManyField(to=Service, blank=True, related_name='teeth', verbose_name='Услуги')
     count = models.PositiveSmallIntegerField(verbose_name='Количество', default=1)
-    event = models.ForeignKey(to='scheduler.Event', on_delete=models.SET_NULL, verbose_name='Событие', blank=True, null=True, related_name='services')
+    event = models.ForeignKey(
+        to='scheduler.Event',
+        on_delete=models.SET_NULL,
+        verbose_name='Событие',
+        blank=True,
+        null=True,
+        related_name='services'
+    )
 
     class Meta:
         verbose_name = 'Зуб'

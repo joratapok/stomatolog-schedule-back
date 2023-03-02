@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from scheduler.models import Customer, TreatmentPlan
+from scheduler.models import Customer
 from price.models import DentalChart
 
 

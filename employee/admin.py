@@ -43,35 +43,35 @@ class UserProfileAdmin(UserAdmin):
         try:
             middle_name = obj.profile.middle_name
             return middle_name
-        except:
+        except User.DoesNotExist:
             return ''
 
     def role(self, obj):
         try:
             role = obj.profile.role
             return role
-        except:
+        except User.DoesNotExist:
             return ''
 
     def date_of_birth(self, obj):
         try:
             date_of_birth = obj.profile.date_of_birth
             return date_of_birth
-        except:
+        except User.DoesNotExist:
             return ''
 
     def phone(self, obj):
         try:
             phone = obj.profile.phone
             return phone
-        except:
+        except User.DoesNotExist:
             return ''
 
     def speciality(self, obj):
         try:
             speciality = obj.profile.speciality
             return speciality
-        except:
+        except User.DoesNotExist:
             return ''
 
     middle_name.short_description = 'Отчество'

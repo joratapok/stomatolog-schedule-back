@@ -10,7 +10,7 @@ from price.models import PriceList, Service, Teeth
 class Customer(models.Model):
     """Модель клиента"""
     GENDER = (
-        ('male', 'Mужчина'),
+        ('male', 'Мужчина'),
         ('female', 'Женщина'),
     )
 
@@ -32,7 +32,9 @@ class Customer(models.Model):
 
 
 class TreatmentPlan(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='Клиент', related_name='treatment_plan')
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE, verbose_name='Клиент', related_name='treatment_plan'
+    )
     tooth = models.PositiveSmallIntegerField(
         verbose_name='Номер зуба', validators=[MaxValueValidator(63)], blank=True, null=True
     )

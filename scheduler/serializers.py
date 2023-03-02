@@ -2,8 +2,6 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from drf_writable_nested.mixins import UniqueFieldsMixin
-from timezone_field import TimeZoneField
-from timezone_field.rest_framework import TimeZoneSerializerField
 
 from employee.models import Profile
 from price.models import Teeth
@@ -131,7 +129,8 @@ class EventClinicSerializer(ModelSerializer):
         model = Event
         depth = 1
         fields = (
-        'id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor', 'invoice')
+            'id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor', 'invoice'
+        )
 
     # def get_services(self, event):
     #     queryset = event.services.all()
@@ -203,14 +202,16 @@ class ClinicSerializer(ModelSerializer):
         return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date'],
                                                                      'profile': self.context['profile']}).data
 
-    def get_doctors(self, clinic):
+    @staticmethod
+    def get_doctors(clinic):
         queryset = Profile.objects.all().select_related('user').prefetch_related('clinic').filter(
             role='doctor',
             clinic=clinic
         )
         return EventProfileSerializer(queryset, many=True).data
 
-    def get_administrators(self, clinic):
+    @staticmethod
+    def get_administrators(clinic):
         queryset = Profile.objects.all().select_related('user').prefetch_related('clinic').filter(
             role='administrator',
             clinic=clinic
