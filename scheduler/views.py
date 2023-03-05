@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 
+from employee.models import Profile
 from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
     CustomerSerializer, CustomerDetailSerializer, DutyShiftSerializer, OnlyClinicSerializer
@@ -78,9 +79,11 @@ class CustomerListCreateApiView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
 
     def get_queryset(self):
+        all_clinics = Profile.objects.get(user=self.request.user).clinic.all()
+        queryset = Customer.objects.filter(clinic__in=all_clinics)
         if 'lastName' in self.request.query_params:
-            return Customer.objects.filter(last_name__istartswith=self.request.query_params['lastName'])[:10]
-        return Customer.objects.all()[:10]
+            return queryset.filter(last_name__istartswith=self.request.query_params['lastName'])[:10]
+        return queryset[:10]
 
 
 class CustomerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):

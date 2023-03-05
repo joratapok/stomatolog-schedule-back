@@ -16,7 +16,7 @@ class Profile(models.Model):
     image = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name='Фото сотрудника', null=True, blank=True)
     speciality = models.CharField(max_length=255, verbose_name='Специальность', null=True, blank=True)
     clinic = models.ManyToManyField('scheduler.Clinic', related_name='profiles', verbose_name='Клиники')
-    color = models.CharField(max_length=50, default='', verbose_name='Цвет')
+    color = models.CharField(max_length=50, default='', verbose_name='Цвет', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Профиль'
