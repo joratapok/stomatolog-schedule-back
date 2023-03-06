@@ -4,7 +4,6 @@ from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 
 from employee.models import Profile
-from employee.permissions import IsOwner
 from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
     CustomerSerializer, CustomerDetailSerializer, DutyShiftSerializer, OnlyClinicSerializer
