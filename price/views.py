@@ -2,25 +2,24 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from price.models import PriceList, Service
 from price.serializers import PriceListSerializer, ServiceSerializer
-from scheduler.permissions import IsOwnerOrAdministrator
 import re
 
 
 class PriceListCreateAPIView(generics.ListCreateAPIView):
     queryset = PriceList.objects.all()
     serializer_class = PriceListSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 class PriceListRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PriceList.objects.all()
     serializer_class = PriceListSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 class ServiceListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ServiceSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
     def split_input_parameter(self):
         chars = re.findall(r'[а-яА-Яa-zA-Z]+', self.request.query_params['service'])
@@ -40,4 +39,4 @@ class ServiceListCreateAPIView(generics.ListCreateAPIView):
 class ServiceRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]

@@ -4,10 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 
 from employee.models import Profile
+from employee.permissions import IsOwner
 from scheduler.models import Clinic, Event, Cabinet, Customer, DutyShift
 from scheduler.serializers import ClinicSerializer, EventSerializer, EventCustomerSerializer, CabinetSerializer, \
     CustomerSerializer, CustomerDetailSerializer, DutyShiftSerializer, OnlyClinicSerializer
-from scheduler.permissions import IsOwnerOrAdministrator
 from scheduler.utils import render_pdf_view
 
 TODAY_DATE = datetime.today().date()
@@ -36,7 +36,7 @@ class ClinicEventListApiView(generics.ListAPIView):
 
 class EventCreateApiView(generics.CreateAPIView):
     queryset = Event.objects.all()
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if isinstance(self.request.data.get('client'), dict):
@@ -47,36 +47,36 @@ class EventCreateApiView(generics.CreateAPIView):
 class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all().prefetch_related('services__dental_services__teeth')
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 class ClinicListCreateApiView(generics.ListCreateAPIView):
     queryset = Clinic.objects.all()
     serializer_class = OnlyClinicSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated, IsOwner]
 
 
 class ClinicRetrieveUpdateDestroyApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Clinic.objects.all()
     serializer_class = OnlyClinicSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated, IsOwner]
 
 
 class CabinetCreateApiView(generics.CreateAPIView):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 class CabinetRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 class CustomerListCreateApiView(generics.ListCreateAPIView):
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         all_clinics = Profile.objects.get(user=self.request.user).clinic.all()
@@ -89,25 +89,25 @@ class CustomerListCreateApiView(generics.ListCreateAPIView):
 class CustomerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 class CustomerDetailRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerDetailSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 class DutyShiftListCreateApiView(generics.ListCreateAPIView):
     queryset = DutyShift.objects.all()
     serializer_class = DutyShiftSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 class DutyShiftRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = DutyShift.objects.all()
     serializer_class = DutyShiftSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdministrator]
+    permission_classes = [IsAuthenticated]
 
 
 @api_view(['GET'])
