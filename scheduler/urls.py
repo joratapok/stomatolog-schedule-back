@@ -8,8 +8,7 @@ urlpatterns = [
     path('<int:pk>/', views.EventRetrieveUpdateDestroyAPIView.as_view(), name='event_update'),
     path('<int:pk>/pdf/', views.get_invoice_of_payment, name='get_pdf'),
 
-    path('clinic/', views.ClinicListCreateApiView.as_view()),
-    path('clinic/<int:pk>/', views.ClinicRetrieveUpdateDestroyApiView.as_view()),
+    path('clinic/<int:pk>/', views.ClinicRetrieveUpdateApiView.as_view()),
 
     path('cabinet/create/', views.CabinetCreateApiView.as_view()),
     path('cabinet/<int:pk>/', views.CabinetRetrieveUpdateDestroyAPIView.as_view()),

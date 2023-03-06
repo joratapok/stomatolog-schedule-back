@@ -32,6 +32,7 @@ class Customer(models.Model):
 
 
 class TreatmentPlan(models.Model):
+    """Модель плана лечения зубов"""
     customer = models.ForeignKey(
         Customer, on_delete=models.CASCADE, verbose_name='Клиент', related_name='treatment_plan'
     )
@@ -49,6 +50,7 @@ class TreatmentPlan(models.Model):
 
 
 class Clinic(models.Model):
+    """Модель клиники"""
     title = models.CharField(max_length=255, verbose_name='Наименование', unique=True)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL", blank=True)
     phone = models.CharField(max_length=255, verbose_name='Телефон', unique=True)
@@ -78,6 +80,7 @@ class Clinic(models.Model):
 
 
 class Cabinet(models.Model):
+    """Модель кабинета"""
     name = models.CharField(max_length=255, verbose_name='Кабинет')
     clinic = models.ForeignKey(to=Clinic,
                                on_delete=models.CASCADE,
@@ -95,6 +98,7 @@ class Cabinet(models.Model):
 
 
 class DutyShift(models.Model):
+    """Модель дежурства"""
     date_start = models.DateTimeField(verbose_name='Дата и время начала дежурства')
     date_finish = models.DateTimeField(verbose_name='Дата и время окончания дежурства')
     doctor = models.ForeignKey(to=Profile,
@@ -116,6 +120,7 @@ class DutyShift(models.Model):
 
 
 class Event(models.Model):
+    """Модель события"""
 
     STATUS = (
         ('not_confirmed', 'Не подтвержден'),

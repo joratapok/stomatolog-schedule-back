@@ -50,16 +50,10 @@ class EventRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class ClinicListCreateApiView(generics.ListCreateAPIView):
+class ClinicRetrieveUpdateApiView(generics.RetrieveUpdateAPIView):
     queryset = Clinic.objects.all()
     serializer_class = OnlyClinicSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
-
-
-class ClinicRetrieveUpdateDestroyApiView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Clinic.objects.all()
-    serializer_class = OnlyClinicSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated]
 
 
 class CabinetCreateApiView(generics.CreateAPIView):
