@@ -13,7 +13,6 @@ TODAY_DATE = datetime.today().date()
 
 
 class ClinicEventListApiView(generics.ListAPIView):
-    queryset = Clinic.objects.all().prefetch_related('cabinets')
     serializer_class = ClinicSerializer
     permission_classes = [IsAuthenticated]
 
@@ -31,6 +30,9 @@ class ClinicEventListApiView(generics.ListAPIView):
             'filter_date': self.get_filter_date(),
             'profile': self.request.user.profile,
         }
+
+    def get_queryset(self):
+        return Clinic.objects.prefetch_related('cabinets').filter(profiles__user=self.request.user)
 
 
 class EventCreateApiView(generics.CreateAPIView):
