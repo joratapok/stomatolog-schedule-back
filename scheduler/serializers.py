@@ -122,7 +122,6 @@ class EventCustomerSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
 
 class EventClinicSerializer(ModelSerializer):
     doctor = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
-    # services = serializers.SerializerMethodField()
     services = TeethListSerializer(many=True)
 
     class Meta:
@@ -131,10 +130,6 @@ class EventClinicSerializer(ModelSerializer):
         fields = (
             'id', 'date_start', 'date_finish', 'services', 'status', 'color', 'comment', 'client', 'doctor', 'invoice'
         )
-
-    # def get_services(self, event):
-    #     queryset = event.services.all()
-    #     return TeethListSerializer(queryset, many=True).data
 
 
 class CabinetSerializer(ModelSerializer):
@@ -160,10 +155,6 @@ class CabinetClinicSerializer(ModelSerializer):
     def get_cabinet_events(self, obj):
         cabinet = obj
         queryset = cabinet.cabinet_events.filter(date_start__startswith=self.context['filter_date']).distinct()
-
-        if self.context['profile'].role == 'doctor':
-            queryset = queryset.filter(doctor=self.context['profile']).distinct()
-
         return EventClinicSerializer(queryset, many=True).data
 
     def get_duty_shift(self, obj):
@@ -196,11 +187,8 @@ class ClinicSerializer(ModelSerializer):
     def get_cabinets(self, obj):
         clinic = obj
         queryset = clinic.cabinets.all()
-
-        if self.context['profile'].role == 'doctor':
-            queryset = queryset.filter(cabinet_events__doctor=self.context['profile']).distinct()
-        return CabinetClinicSerializer(queryset, many=True, context={'filter_date': self.context['filter_date'],
-                                                                     'profile': self.context['profile']}).data
+        return CabinetClinicSerializer(
+            queryset, many=True, context={'filter_date': self.context['filter_date']}).data
 
     @staticmethod
     def get_doctors(clinic):

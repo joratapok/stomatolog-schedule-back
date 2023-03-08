@@ -28,7 +28,6 @@ class ClinicEventListApiView(generics.ListAPIView):
         return {
             'request': self.request,
             'filter_date': self.get_filter_date(),
-            'profile': self.request.user.profile,
         }
 
     def get_queryset(self):
