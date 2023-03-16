@@ -35,14 +35,14 @@ class CustomerSerializer(ModelSerializer):
         treatment_plan_data = validated_data.pop('treatment_plan') if 'treatment_plan' in validated_data else None
         customer = Customer.objects.create(**validated_data)
 
-        if treatment_plan_data:
+        if treatment_plan_data is not None:
             for treatment_plan in treatment_plan_data:
                 TreatmentPlan.objects.create(customer=customer, **treatment_plan)
         return customer
 
     def update(self, instance, validated_data):
         treatment_plan_data = validated_data.pop('treatment_plan') if 'treatment_plan' in validated_data else None
-        if treatment_plan_data:
+        if treatment_plan_data is not None:
             TreatmentPlan.objects.filter(customer=instance).delete()
 
             for treatment_plan in treatment_plan_data:
