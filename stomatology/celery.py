@@ -13,7 +13,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'delete_user_token_every_day': {
         'task': 'employee.tasks.delete_user_token_every_day',
-        # Начало времени выполения зависит от настройки CELERY_TIMEZONE
+        # Начало времени выполнения зависит от настройки CELERY_TIMEZONE
         'schedule': crontab(hour=7, minute=0),
     }
 }
