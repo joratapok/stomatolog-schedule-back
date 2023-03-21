@@ -35,6 +35,7 @@ et-xmlfile==1.1.0
 flower==1.2.0
 gevent==22.10.2
 greenlet==2.0.1
+gunicorn==20.1.0
 html5lib==1.1
 humanize==4.4.0
 idna==3.4
@@ -54,6 +55,7 @@ pdfkit==1.0.0
 Pillow==9.2.0
 prometheus-client==0.15.0
 prompt-toolkit==3.0.36
+psycopg2-binary==2.9.5
 pycparser==2.21
 pyHanko==0.16.0
 pyhanko-certvalidator==0.19.8

@@ -1,29 +1,25 @@
+version: '3.8'
+
 services:
   web:
-    build:
-      context: .
-
-    ports:
-    - 8000:8000
-
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/app
-
-    environment:
-      - DB_HOST=database
-      - DB_NAME=stomatology_db
-      - DB_USER=stomatology_user_db
-      - DB_PASS=fD*eR6rq5uVFP^y@2Fe2
-
-    command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
-
+      - ./:/usr/src/app/
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env.dev
     depends_on:
-      - database
-
-  database:
-    image: library/postgres:14.6
+      - db
+  db:
+    image: postgres:15.2
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     environment:
+      - POSTGRES_USER=stomatology_user
+      - POSTGRES_PASSWORD=tNwz48Hd62e2dbK9vZ9P0ZS5
       - POSTGRES_DB=stomatology_db
-      - POSTGRES_USER=stomatology_user_db
-      - POSTGRES_PASSWORD=fD*eR6rq5uVFP^y@2Fe2
+
+volumes:
+  postgres_data:
