@@ -17,17 +17,17 @@ Run Celery:
 # Docker Run
 
 For the first time:
-  # Build and up docker containers
+  Build and up docker containers:
   docker-compose -f docker-compose.prod.yml up -d --build
 
-  # Create superuser
+  Create superuser:
   docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
 
-  # Access to the docker container from the inside
+  Access to the docker container from the inside:
   docker exec -it --user root stomatolog-schedule-back_web_1 /bin/bash
 
-  # Delete all work containers with volumes
+  Delete all work containers with volumes:
   docker-compose -f docker-compose.prod.yml down -v
 
-  # Restart all docker containers
+  Restart all docker containers:
   docker-compose -f docker-compose.prod.yml restart
