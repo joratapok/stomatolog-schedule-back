@@ -21,13 +21,13 @@ For the first time:
    - docker-compose -f docker-compose.prod.yml up -d --build
 
   2. Create superuser:
-  docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
+   - docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
 
   3. Access to the docker container from the inside:
-  docker exec -it --user root stomatolog-schedule-back_web_1 /bin/bash
+   - docker exec -it --user root stomatolog-schedule-back_web_1 /bin/bash
 
   4. Delete all work containers with volumes:
-  docker-compose -f docker-compose.prod.yml down -v
+   - docker-compose -f docker-compose.prod.yml down -v
 
   5. Restart all docker containers:
-  docker-compose -f docker-compose.prod.yml restart
+   - docker-compose -f docker-compose.prod.yml restart
