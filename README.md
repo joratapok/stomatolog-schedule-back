@@ -18,7 +18,7 @@ Run Celery:
 
 For the first time:
   1. Build and up docker containers:
-  docker-compose -f docker-compose.prod.yml up -d --build
+   - docker-compose -f docker-compose.prod.yml up -d --build
 
   2. Create superuser:
   docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
