@@ -17,7 +17,17 @@ Run Celery:
 # Docker Run
 
 For the first time:
-  1. docker-compose build
-  2. docker-compose run --rm web sh -c "python manage.py migrate"   # Where "web" this is name of service from file docker-compose.yml
-  3. docker-compose run --rm web sh -c "python manage.py createsuperuser"
-  4. docker-compose up
+  1. Build and up docker containers:
+   - docker-compose -f docker-compose.prod.yml up -d --build
+
+  2. Create superuser:
+   - docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
+
+  3. Access to the docker container from the inside:
+   - docker exec -it --user root stomatolog-schedule-back_web_1 /bin/bash
+
+  4. Delete all work containers with volumes:
+   - docker-compose -f docker-compose.prod.yml down -v
+
+  5. Restart all docker containers:
+   - docker-compose -f docker-compose.prod.yml restart
