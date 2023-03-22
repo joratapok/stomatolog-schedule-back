@@ -35,11 +35,6 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 CORS_ALLOW_ALL_ORIGINS = True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://localhost:3030",
-]
-
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 
 # Application definition
@@ -100,20 +95,20 @@ WSGI_APPLICATION = 'stomatology.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # For local database
-# DATABASES = {
-#    'default': env.db(),
-# }
+DATABASES = {
+   'default': env.db(),
+}
 
 # For docker-compose
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.environ.get('DB_HOST'),
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASS')
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'HOST': os.environ.get('DB_HOST'),
+#         'NAME': os.environ.get('DB_NAME'),
+#         'USER': os.environ.get('DB_USER'),
+#         'PASSWORD': os.environ.get('DB_PASS')
+#     }
+# }
 
 
 # Password validation
