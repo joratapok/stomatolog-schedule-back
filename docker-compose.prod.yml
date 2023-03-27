@@ -15,6 +15,7 @@ services:
       - ./.env.prod
     depends_on:
       - db
+
   db:
     image: postgres:15.2
     volumes:
@@ -23,6 +24,7 @@ services:
       - POSTGRES_USER=stomatology_user
       - POSTGRES_PASSWORD=tNwz48Hd62e2dbK9vZ9P0ZS5
       - POSTGRES_DB=stomatology_db
+
   nginx:
     build: ./nginx
     volumes:
@@ -32,6 +34,13 @@ services:
       - 1337:80
     depends_on:
       - web
+
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: rabbitmq:3.11.11
+    ports:
+      - 5672:5672
+      - 15672:15672
 
 volumes:
   postgres_data:
