@@ -201,6 +201,6 @@ INTERNAL_IPS = [
 ]
 
 # Celery settings
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672/'
 CELERY_TIMEZONE = 'Asia/Barnaul'
 CELERY_ENABLE_UTC = False
